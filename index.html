@@ -27,12 +27,15 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+html,body{overflow-x:hidden;width:100%}
+@supports (overflow-x:clip){html,body{overflow-x:clip}}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
 button,a{touch-action:manipulation}
-img,svg{display:block}
+img,svg,video{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 .container{max-width:1120px;margin:0 auto;padding:0 24px}
-section{position:relative;padding:96px 0}
+section{position:relative;padding:96px 0;overflow-x:hidden}
+@supports (overflow-x:clip){section{overflow-x:clip}}
 h1,h2,h3{font-family:var(--font-display);line-height:1.1;letter-spacing:-.02em}
 h2{font-size:clamp(28px,4.5vw,44px);margin-bottom:14px}
 .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-soft);margin-bottom:18px}
@@ -100,6 +103,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 @media (max-width:960px){
   .hero{padding:130px 0 72px}
   .hero-grid{grid-template-columns:1fr;gap:52px}
+  .hero h1 .accent{white-space:normal}
   .phone{width:280px}
   .nav-links{display:none}
   .burger{display:block}
@@ -127,8 +131,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .demo-box{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(22px,4vw,44px);margin-top:48px;position:relative;z-index:1}
 .demo-steps{color:var(--muted);font-size:14px;margin-bottom:22px}
 .demo-steps b{color:var(--orange-soft)}
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:18px}
-.day-btn{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 4px 12px;cursor:pointer;text-align:center;color:var(--text);font-family:var(--font-body);transition:border-color .2s,background .2s,transform .1s}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:18px}
+.day-btn{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 4px 12px;cursor:pointer;text-align:center;color:var(--text);font-family:var(--font-body);transition:border-color .2s,background .2s,transform .1s;min-width:0;overflow:hidden}
 .day-btn:active{transform:scale(.96)}
 .day-btn .dl{font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--muted);display:block;margin-bottom:7px}
 .day-btn .st{font-size:12px;font-weight:600;display:block}
@@ -141,7 +145,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .presets{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
 .chip{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:500;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.2s;font-family:var(--font-body)}
 .chip:hover{border-color:var(--orange);color:var(--orange-soft)}
-.plan-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.plan-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .plan-day{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 10px;min-height:150px;display:flex;flex-direction:column;gap:8px}
 .plan-day .pd{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--muted)}
 .plan-day .pt{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px;width:fit-content}
