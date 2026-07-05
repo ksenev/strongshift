@@ -46,7 +46,7 @@ h2{font-size:clamp(28px,4.5vw,44px);margin-bottom:14px}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,77,20,.45)}
 .btn-ghost{border-color:var(--line);color:var(--text);background:transparent}
 .btn-ghost:hover{border-color:var(--orange);color:var(--orange-soft)}
-.glow{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+.glow{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
@@ -70,7 +70,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .mobile-menu.open{display:flex}
 
 /* ---------- HERO ---------- */
-.hero{padding:170px 0 110px;overflow:hidden}
+.hero{position:relative;padding:170px 0 110px;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;position:relative;z-index:1}
 .badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-dim);border:1px solid rgba(255,77,20,.35);color:var(--orange-soft);font-size:13px;font-weight:600;letter-spacing:.08em;padding:7px 16px;border-radius:999px;margin-bottom:26px}
 .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
@@ -306,8 +306,8 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 </nav>
 
 <header class="hero" id="top">
-  <div class="glow" style="width:600px;height:600px;background:rgba(255,77,20,.16);top:-150px;right:-150px"></div>
-  <div class="glow" style="width:400px;height:400px;background:rgba(255,77,20,.08);bottom:-100px;left:-150px"></div>
+  <div class="glow" style="width:600px;height:600px;background:radial-gradient(circle closest-side,rgba(255,77,20,.16),transparent 70%);top:-150px;right:-150px"></div>
+  <div class="glow" style="width:400px;height:400px;background:radial-gradient(circle closest-side,rgba(255,77,20,.08),transparent 70%);bottom:-100px;left:-150px"></div>
   <div class="container hero-grid">
     <div>
       <span class="badge"><span class="dot"></span>LAUNCHING Q4 2026</span>
@@ -395,7 +395,7 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
   </div>
 </section>
 <section class="demo" id="demo">
-  <div class="glow" style="width:500px;height:500px;background:rgba(255,77,20,.09);top:20%;left:-200px"></div>
+  <div class="glow" style="width:500px;height:500px;background:radial-gradient(circle closest-side,rgba(255,77,20,.09),transparent 70%);top:20%;left:-200px"></div>
   <div class="container">
     <div class="reveal">
       <span class="kicker">Live demo</span>
@@ -486,7 +486,7 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 </section>
 
 <section class="waitlist" id="waitlist">
-  <div class="glow" style="width:700px;height:500px;background:rgba(255,77,20,.13);bottom:-200px;left:50%;transform:translateX(-50%)"></div>
+  <div class="glow" style="width:700px;height:500px;background:radial-gradient(ellipse closest-side,rgba(255,77,20,.13),transparent 70%);bottom:-200px;left:50%;transform:translateX(-50%)"></div>
   <div class="container reveal">
     <span class="kicker" style="justify-content:center">Early access</span>
     <h2>Train like your roster matters.</h2>
