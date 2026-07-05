@@ -492,10 +492,12 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
     <h2>Train like your roster matters.</h2>
     <p class="sub">Join the waitlist for first access to the beta and 30% off your first year at launch.</p>
     <form class="wl-form" id="wlForm">
-      <input type="email" id="wlEmail" placeholder="you@nightshift.com" required aria-label="Email address">
-      <button class="btn btn-primary" type="submit">Get early access</button>
+      <input type="email" name="email" id="wlEmail" placeholder="you@nightshift.com" required aria-label="Email address">
+      <input type="hidden" name="ref" id="wlRef" value="direct">
+      <button class="btn btn-primary" type="submit" id="wlBtn">Get early access</button>
     </form>
     <div class="wl-success" id="wlSuccess">✓ You're on the list. We'll be in touch before launch — go get some sleep.</div>
+    <div class="wl-success" id="wlError" style="border-color:rgba(240,90,90,.4);background:rgba(240,90,90,.08);color:#f09090">Something went wrong — try again, or email hello@strongshift.app</div>
     <p class="wl-note">No spam. One or two updates before launch, then your invite.</p>
   </div>
 </section>
@@ -597,10 +599,28 @@ function generatePlan(){
 renderWeek();generatePlan();
 
 // ---------- Waitlist ----------
+(function(){
+  const ref=new URLSearchParams(window.location.search).get('ref');
+  if(ref)document.getElementById('wlRef').value=ref.slice(0,50);
+})();
 document.getElementById('wlForm').addEventListener('submit',e=>{
   e.preventDefault();
-  e.target.style.display='none';
-  document.getElementById('wlSuccess').style.display='block';
+  const form=e.target,btn=document.getElementById('wlBtn'),err=document.getElementById('wlError');
+  err.style.display='none';
+  btn.disabled=true;btn.textContent='Joining…';
+  fetch('https://formspree.io/f/xlgyzjwp',{
+    method:'POST',
+    body:new FormData(form),
+    headers:{'Accept':'application/json'}
+  }).then(r=>{
+    if(r.ok){
+      form.style.display='none';
+      document.getElementById('wlSuccess').style.display='block';
+    }else{throw new Error('submit failed');}
+  }).catch(()=>{
+    err.style.display='block';
+    btn.disabled=false;btn.textContent='Get early access';
+  });
 });
 
 document.getElementById('yr').textContent=new Date().getFullYear();
