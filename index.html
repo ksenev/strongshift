@@ -276,6 +276,36 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:14px}
 .foot .logo{font-size:17px}
 .foot a:hover{color:var(--orange-soft)}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes planIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes popIn{0%{transform:scale(.92)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes blink{from{opacity:.25}to{opacity:1}}
+@keyframes faqIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+/* hero entrance */
+.hero .badge,.hero h1,.hero .sub,.hero-ctas,.hero-props,.phone-wrap{opacity:0;animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+.hero .badge{animation-delay:.05s}
+.hero h1{animation-delay:.16s}
+.hero .sub{animation-delay:.28s}
+.hero-ctas{animation-delay:.4s}
+.hero-props{animation-delay:.52s}
+.phone-wrap{animation-duration:.9s;animation-delay:.35s}
+/* nav appears on scroll */
+nav{transition:background-color .35s ease,border-color .35s ease}
+nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
+/* demo */
+.plan-day{animation:planIn .45s cubic-bezier(.2,.7,.2,1) both}
+.day-btn.pop{animation:popIn .3s ease}
+.plan-sum.bump{animation:blink .45s ease}
+/* faq answers */
+.faq details[open] p{animation:faqIn .35s ease}
+/* waitlist success */
+.wl-success{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion:reduce){
+  .hero .badge,.hero h1,.hero .sub,.hero-ctas,.hero-props,.phone-wrap,.plan-day,.day-btn.pop,.plan-sum.bump,.wl-success,.faq details[open] p{animation:none!important;opacity:1}
+  .phone{animation:none}
+}
 </style>
 </head>
 <body>
@@ -522,7 +552,17 @@ burger.addEventListener('click',()=>{
 menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
 
 // ---------- Scroll reveals ----------
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.feat-grid,.price-grid,.faq .container').forEach(g=>{
+  g.querySelectorAll('.reveal').forEach((el,i)=>el.dataset.rd=i*90);
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const el=e.target,d=+(el.dataset.rd||0);
+  el.style.transitionDelay=d+'ms';
+  el.classList.add('on');
+  setTimeout(()=>{el.style.transitionDelay=''},900+d);
+  io.unobserve(el);
+}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 // ---------- Demo engine ----------
@@ -538,9 +578,9 @@ const PRESETS={
 let states=[...PRESETS.mixed];
 const weekEl=document.getElementById('week'),planEl=document.getElementById('plan'),sumEl=document.getElementById('planSum');
 
-function renderWeek(){
+function renderWeek(popI){
   weekEl.innerHTML=states.map((s,i)=>`
-    <button class="day-btn" data-state="${s}" data-i="${i}" aria-label="${DAYS[i]}: ${META[s].label} — tap to change">
+    <button class="day-btn${i===popI?' pop':''}" data-state="${s}" data-i="${i}" aria-label="${DAYS[i]}: ${META[s].label} — tap to change">
       <span class="dl">${DAYS[i].toUpperCase()}</span>
       <span class="ic">${META[s].ic}</span>
       <span class="st">${META[s].label}</span>
@@ -550,7 +590,7 @@ weekEl.addEventListener('click',e=>{
   const btn=e.target.closest('.day-btn');if(!btn)return;
   const i=+btn.dataset.i;
   states[i]=STATES[(STATES.indexOf(states[i])+1)%STATES.length];
-  renderWeek();generatePlan();
+  renderWeek(i);generatePlan();
 });
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
   states=[...PRESETS[c.dataset.preset]];
@@ -590,7 +630,7 @@ function generatePlan(){
     return{type:'rest',tag:'Rest',t:'Full Rest',d:'Genuine day off. Adaptation happens here, not in the gym.'};
   });
   planEl.innerHTML=plan.map((p,i)=>`
-    <div class="plan-day">
+    <div class="plan-day" style="animation-delay:${i*45}ms">
       <span class="pd">${DAYS[i].toUpperCase()}</span>
       <span class="pt pt-${p.type}">${p.tag}</span>
       <h4>${p.t}</h4>
@@ -598,6 +638,7 @@ function generatePlan(){
     </div>`).join('');
   const n={key:0,easy:0,rec:0,rest:0};plan.forEach(p=>n[p.type]++);
   sumEl.innerHTML=`<b>Weekly load:</b><span><b>${n.key}</b> key session${n.key===1?'':'s'}</span><span><b>${n.easy}</b> easy</span><span><b>${n.rec}</b> recovery</span><span><b>${n.rest}</b> rest</span><span class="rebuilt">Rebuilt in 0.02s ⚡</span>`;
+  sumEl.classList.remove('bump');void sumEl.offsetWidth;sumEl.classList.add('bump');
 }
 renderWeek();generatePlan();
 
@@ -625,6 +666,10 @@ document.getElementById('wlForm').addEventListener('submit',e=>{
     btn.disabled=false;btn.textContent='Get early access';
   });
 });
+
+const navEl=document.querySelector('nav');
+const onScroll=()=>navEl.classList.toggle('scrolled',scrollY>24);
+addEventListener('scroll',onScroll,{passive:true});onScroll();
 
 document.getElementById('yr').textContent=new Date().getFullYear();
 </script>
