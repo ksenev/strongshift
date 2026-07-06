@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Strongshift — Your training, your roster</title>
+<meta name="description" content="Strongshift beta — roster-driven strength and running programming.">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b;--bg2:#101012;--surface:#151517;--surface2:#1c1c1f;--line:#26262a;
+  --text:#f4f2ef;--muted:#9b9a97;--orange:#ff4d14;--orange-soft:#ff7a3d;--orange-dim:rgba(255,77,20,.14);
+  --green:#7bcf92;--green-dim:rgba(120,200,140,.12);--night:#9f9fff;--night-dim:#1d1d3a;
+  --fd:'Space Grotesk',system-ui,sans-serif;--fb:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.5;-webkit-tap-highlight-color:transparent;min-height:100dvh}
+h1,h2,h3{font-family:var(--fd);line-height:1.15;letter-spacing:-.02em}
+button{font-family:var(--fb);cursor:pointer}
+input,select{font-family:var(--fb)}
+.wrap{max-width:520px;margin:0 auto;padding:0 18px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:var(--fd);font-weight:600;font-size:16px;padding:15px;border-radius:999px;border:1px solid transparent;background:var(--orange);color:#0a0a0b;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.45}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--text)}
+.btn-sm{width:auto;padding:9px 18px;font-size:13.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:16px 0 7px}
+.input{width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--text);font-size:16px;outline:none}
+.input:focus{border-color:var(--orange)}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--orange-soft)}
+.muted{color:var(--muted)}
+.screen{display:none;padding-bottom:96px}
+.screen.on{display:block}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:8px}
+.p-key{background:var(--orange-dim);color:var(--orange-soft)}
+.p-easy{background:var(--green-dim);color:var(--green)}
+.p-rec{background:var(--night-dim);color:var(--night)}
+.p-rest{background:#1e1e22;color:var(--muted)}
+.p-done{background:var(--green-dim);color:var(--green)}
+.tag{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
+.t-day{background:rgba(255,122,61,.15);color:var(--orange-soft)}
+.t-late{background:rgba(255,200,60,.13);color:#ffd166}
+.t-night{background:var(--night-dim);color:var(--night)}
+.t-off{background:#1e1e22;color:var(--muted)}
+.seg{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;background:transparent;border:none;border-radius:10px;padding:11px 4px;color:var(--muted);font-weight:600;font-size:14px}
+.seg button.on{background:var(--orange);color:#0a0a0b}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(10,10,11,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.logo{font-family:var(--fd);font-weight:700;font-size:18px}
+.logo em{font-style:normal;color:var(--orange)}
+.beta{font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--orange-dim);color:var(--orange-soft);padding:3px 8px;border-radius:6px}
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(16,16,18,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabbar .inner{max-width:520px;margin:0 auto;display:flex}
+.tabbar button{flex:1;background:none;border:none;padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:10.5px;font-weight:600}
+.tabbar button.on{color:var(--orange)}
+.tabbar svg{width:22px;height:22px}
+.steps{display:flex;gap:6px;margin:18px 0 6px}
+.steps span{flex:1;height:4px;border-radius:4px;background:var(--surface2)}
+.steps span.on{background:var(--orange)}
+.rgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.rday{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--text)}
+.rday b{font-family:var(--fd);font-size:13px;font-weight:600}
+.rday small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}
+.srow{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:9px}
+.srow.done{border-color:rgba(120,200,140,.35)}
+.srow .dd{font-family:var(--fd);font-weight:600;font-size:11px;color:var(--muted);width:42px;padding-top:2px}
+.srow .body{flex:1;min-width:0}
+.srow h4{font-size:14.5px;font-family:var(--fd);margin:3px 0 2px}
+.srow p{font-size:12px;color:var(--muted)}
+.metric{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}
+.metric b{display:block;font-family:var(--fd);font-size:24px;letter-spacing:-.02em}
+.metric span{font-size:11px;color:var(--muted)}
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.overlay img{max-width:100%;max-height:80vh;border-radius:14px}
+.notice{background:var(--orange-dim);border:1px dashed rgba(255,77,20,.45);border-radius:14px;padding:12px 14px;font-size:12.5px;color:var(--orange-soft)}
+.week-head{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--muted);margin:20px 0 10px}
+.adh{display:flex;gap:5px;align-items:flex-end;height:64px;margin-top:10px}
+.adh div{flex:1;background:var(--surface2);border-radius:6px 6px 0 0;position:relative}
+.adh div i{position:absolute;bottom:0;left:0;right:0;background:var(--orange);border-radius:6px 6px 0 0}
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div id="s-auth" class="screen">
+  <div class="wrap" style="padding-top:12vh">
+    <div style="text-align:center;margin-bottom:34px">
+      <div class="logo" style="font-size:28px">Strong<em>shift</em></div>
+      <p class="muted" style="margin-top:8px;font-size:15px">Training that adapts to your roster.</p>
+    </div>
+    <div class="card fade">
+      <h2 style="font-size:20px">Create your account</h2>
+      <p class="muted" style="font-size:13px;margin-top:4px">Beta: your data is stored on this device only. Cloud accounts arrive with the full launch.</p>
+      <label class="label" for="a-name">First name</label>
+      <input class="input" id="a-name" placeholder="Kal" autocomplete="given-name">
+      <label class="label" for="a-email">Email</label>
+      <input class="input" id="a-email" type="email" placeholder="you@nightshift.com" autocomplete="email">
+      <label class="label">What do you do?</label>
+      <div class="seg" id="a-role">
+        <button data-v="Nurse">Nurse</button><button data-v="Doctor">Doctor</button><button data-v="Paramedic">Paramedic</button><button data-v="Other">Other</button>
+      </div>
+      <button class="btn" id="a-go" style="margin-top:22px">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div id="s-onboard" class="screen">
+  <div class="wrap" style="padding-top:26px">
+    <span class="kicker">Setup</span>
+    <div class="steps"><span id="st1"></span><span id="st2"></span><span id="st3"></span></div>
+
+    <div id="ob1" style="display:none" class="fade">
+      <h2 style="font-size:22px;margin:14px 0 4px">What are you training for?</h2>
+      <p class="muted" style="font-size:13.5px">Pick one or both — the engine programs them together.</p>
+      <div class="card" style="margin-top:16px">
+        <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+          <span><b style="font-family:var(--fd)">Running goal</b><br><small class="muted">Structured toward a race time</small></span>
+          <input type="checkbox" id="g-run" checked style="width:22px;height:22px;accent-color:var(--orange)">
+        </label>
+        <div id="run-detail" style="margin-top:14px">
+          <div class="seg" id="g-dist"><button data-v="5" class="">5 km</button><button data-v="10" class="on">10 km</button></div>
+          <label class="label">Target time (mm:ss)</label>
+          <input class="input" id="g-time" placeholder="50:00" inputmode="numeric">
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+          <span><b style="font-family:var(--fd)">Strength</b><br><small class="muted">Progressive lifting, squat/bench/dead focus</small></span>
+          <input type="checkbox" id="g-lift" checked style="width:22px;height:22px;accent-color:var(--orange)">
+        </label>
+      </div>
+      <label class="label">Max sessions per week: <b id="g-cap-out" style="color:var(--text)">5</b></label>
+      <input type="range" id="g-cap" min="3" max="6" step="1" value="5" style="width:100%;accent-color:var(--orange)">
+      <button class="btn" id="ob1-go" style="margin-top:22px">Next</button>
+    </div>
+
+    <div id="ob2" style="display:none" class="fade">
+      <h2 style="font-size:22px;margin:14px 0 4px">Enter your roster</h2>
+      <p class="muted" style="font-size:13.5px">Next 14 days. Tap a day to cycle Off → Day → Late → Night.</p>
+      <div style="margin:14px 0">
+        <label class="btn btn-ghost" style="font-size:14px">
+          📷 Upload roster photo (optional)
+          <input type="file" id="r-photo" accept="image/*" style="display:none">
+        </label>
+        <div id="r-photo-wrap" style="display:none;margin-top:10px;text-align:center">
+          <img id="r-photo-img" alt="Your roster photo" style="max-height:110px;border-radius:12px;border:1px solid var(--line);cursor:pointer">
+          <p class="muted" style="font-size:11.5px;margin-top:6px">Tap to enlarge while you transcribe. Auto-parsing lands in a future update.</p>
+        </div>
+      </div>
+      <div class="rgrid" id="ob-roster"></div>
+      <button class="btn" id="ob2-go" style="margin-top:22px">Next</button>
+    </div>
+
+    <div id="ob3" style="display:none" class="fade">
+      <h2 style="font-size:22px;margin:14px 0 4px">Your plan is ready.</h2>
+      <p class="muted" style="font-size:13.5px" id="ob3-sum"></p>
+      <div id="ob3-preview" style="margin-top:16px"></div>
+      <button class="btn" id="ob3-go" style="margin-top:22px">Start training</button>
+    </div>
+  </div>
+</div>
+
+<div id="s-app" class="screen">
+  <div class="topbar"><div class="wrap"><span class="logo">Strong<em>shift</em></span><span class="beta">BETA</span></div></div>
+  <div class="wrap" style="padding-top:18px">
+    <div id="v-today"></div>
+    <div id="v-roster" style="display:none"></div>
+    <div id="v-plan" style="display:none"></div>
+    <div id="v-progress" style="display:none"></div>
+    <div id="v-profile" style="display:none"></div>
+  </div>
+  <div class="tabbar"><div class="inner">
+    <button data-v="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>Today</button>
+    <button data-v="roster"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Roster</button>
+    <button data-v="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5v14M18 5v14M3 8v8M21 8v8M6 12h12"/></svg>Plan</button>
+    <button data-v="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M14 7h7v7"/></svg>Progress</button>
+    <button data-v="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>Profile</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="photo-overlay"><img id="photo-big" alt="Roster photo enlarged"></div>
+
+<script>
+"use strict";
+/* ================= STATE ================= */
+const KEY="strongshift_v1";
+const DEF={profile:null,goals:{run:true,dist:10,targetSec:3000,lift:true,cap:5},rosterStart:null,roster:[],photo:null,log:[],onboarded:false};
+let S=load();
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));return s?Object.assign({},DEF,s):structuredClone(DEF);}catch(e){return structuredClone(DEF);}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert("Storage full — remove the roster photo in Profile to free space.");}}
+function todayISO(){const d=new Date();return d.toISOString().slice(0,10);}
+function addDays(iso,n){const d=new Date(iso+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function fmtDay(iso){return new Date(iso+"T12:00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric"});}
+function rollRoster(){
+  if(!S.rosterStart){S.rosterStart=todayISO();S.roster=Array(14).fill("O");return;}
+  const t=todayISO();
+  let diff=Math.round((new Date(t)-new Date(S.rosterStart))/86400000);
+  if(diff>0){S.roster=S.roster.slice(diff);while(S.roster.length<14)S.roster.push("O");S.rosterStart=t;save();}
+  while(S.roster.length<14)S.roster.push("O");
+}
+/* ================= ENGINE ================= */
+const SHIFT={D:{n:"Day",t:"t-day",times:"07:00–19:00"},L:{n:"Late",t:"t-late",times:"14:00–22:30"},N:{n:"Night",t:"t-night",times:"19:00–07:00"},O:{n:"Off",t:"t-off",times:""}};
+const CYCLE={O:"D",D:"L",L:"N",N:"O"};
+function paces(){
+  if(!S.goals.run)return null;
+  const g=S.goals.targetSec/S.goals.dist;
+  const f=s=>{s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+"/km";};
+  return{goal:f(g),easy:f(g+70),tempo:f(S.goals.dist===10?g-4:g+12),intv:f(S.goals.dist===10?g-14:g-4)};
+}
+function pools(wk){
+  const p=paces(),{run,lift}=S.goals;
+  const P=[];
+  if(run)P.push({t:"Long run — "+(wk?14:12)+" km steady",d:p?("Hold "+p.easy+" · build the engine"):"","tm":"09:00",ty:"key",km:wk?14:12});
+  if(lift)P.push({t:"Heavy lower — squat 5×5"+(wk?" +2.5 kg":""),d:"Leave 1–2 reps in reserve",tm:"10:00",ty:"key"});
+  if(run)P.push({t:"Tempo — 3×2 km",d:p?("At "+p.tempo+" · 2 min float"):"",tm:"09:30",ty:"key",km:7});
+  if(lift)P.push({t:"Upper strength + core",d:"Press + pull supersets",tm:"10:00",ty:"key"});
+  if(run&&!lift)P.push({t:"Intervals — 6×800 m",d:p?("At "+p.intv):"",tm:"09:30",ty:"key",km:5});
+  if(!run&&!lift)P.push({t:"Full-body strength",d:"45 min compound circuit",tm:"10:00",ty:"key"},{t:"Easy run — 30 min",d:"Conversational pace",tm:"09:30",ty:"easy",km:5});
+  return P;
+}
+function buildPlan(){
+  rollRoster();
+  const plan=[];let poolN=[0,0],keyN=[0,0];
+  for(let i=0;i<14;i++){
+    const s=S.roster[i],wk=i<7?0:1,prev=i>0?S.roster[i-1]:"O";
+    const cap=()=>keyN[wk]>=S.goals.cap;
+    const p=paces();
+    let ses;
+    if(s==="N"){
+      if(prev!=="N"&&!cap()){keyN[wk]++;ses={t:"Strength A — lower body",d:"Lift while day-adapted, then nap before the shift",tm:"15:30 · before shift",ty:"key"};}
+      else ses={t:"Protect sleep",d:"20 min mobility at most. Sleep is the session.",tm:"",ty:"rest"};
+    }else if(s==="D"){
+      if(prev==="N")ses={t:"Rest — recover from nights",d:"Sleep debt day. Walk if anything.",tm:"",ty:"rest"};
+      else if(prev==="D"&&!cap()){keyN[wk]++;ses=S.goals.lift?{t:"Strength B — upper + core",d:"Express session, in and out",tm:"18:00 · after shift",ty:"key"}:{t:"Tempo — 20 min",d:p?("At "+p.tempo):"",tm:"18:00 · after shift",ty:"key",km:5};}
+      else ses={t:"Easy run — 30 min",d:p?("Zone 2, "+p.easy+" or slower"):"Zone 2, conversational",tm:"18:30 · after shift",ty:"easy",km:5};
+    }else if(s==="L"){
+      if(!cap()){keyN[wk]++;ses=S.goals.lift?{t:"Strength B — bench + pull",d:"Morning session, full recovery before the late",tm:"09:30 · before shift",ty:"key"}:{t:"Intervals — 6×800 m",d:p?("At "+p.intv):"",tm:"09:30 · before shift",ty:"key",km:5};}
+      else ses={t:"Easy run — 30 min",d:"Before your shift",tm:"09:30 · before shift",ty:"easy",km:5};
+    }else{
+      if(prev==="N")ses={t:"Recovery run — 5 km",d:"After anchor sleep. Daylight resets the clock.",tm:"16:00",ty:"rec",km:5};
+      else if(!cap()){const pl=pools(wk);const x=pl[poolN[wk]%pl.length];poolN[wk]++;if(x.ty==="key")keyN[wk]++;ses=Object.assign({tm:x.tm},x);}
+      else ses={t:"Full rest",d:"Adaptation happens here, not the gym.",tm:"",ty:"rest"};
+    }
+    plan.push(Object.assign({shift:s,date:addDays(S.rosterStart,i)},ses));
+  }
+  return plan;
+}
+/* ================= LOGGING ================= */
+function isDone(date){return S.log.some(l=>l.date===date);}
+function toggleDone(date,title,ty){
+  if(isDone(date))S.log=S.log.filter(l=>l.date!==date);
+  else S.log.push({date,title,ty,at:Date.now()});
+  save();renderAll();
+}
+function streak(){
+  if(!S.log.length)return 0;
+  let n=0,gap=0,d=todayISO(),guard=0;
+  if(!isDone(d))d=addDays(d,-1);
+  while(gap<2&&guard<400){
+    if(isDone(d)){n++;gap=0;}else gap++;
+    d=addDays(d,-1);guard++;
+  }
+  return n;
+}
+/* ================= RENDER ================= */
+const $=id=>document.getElementById(id);
+function show(screen){["s-auth","s-onboard","s-app"].forEach(s=>$(s).classList.toggle("on",s===screen));window.scrollTo(0,0);}
+function pill(ty){const m={key:["Key","p-key"],easy:["Easy","p-easy"],rec:["Recovery","p-rec"],rest:["Rest","p-rest"]}[ty];return '<span class="pill '+m[1]+'">'+m[0]+'</span>';}
+function tag(s){return '<span class="tag '+SHIFT[s].t+'">'+SHIFT[s].n+'</span>';}
+
+function rosterGrid(elId,editable){
+  rollRoster();
+  $(elId).innerHTML=S.roster.map((s,i)=>{
+    const iso=addDays(S.rosterStart,i);
+    return '<button class="rday" data-i="'+i+'"><span><b>'+fmtDay(iso)+'</b><small>'+(SHIFT[s].times||"day off")+'</small></span>'+tag(s)+'</button>';
+  }).join("");
+  if(editable)$(elId).querySelectorAll(".rday").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i;S.roster[i]=CYCLE[S.roster[i]];save();rosterGrid(elId,true);
+    if($("s-app").classList.contains("on"))renderAll(false);
+  });
+}
+function sessionRow(p,interactive){
+  const done=isDone(p.date);
+  return '<div class="srow'+(done?" done":"")+'"><span class="dd">'+fmtDay(p.date).toUpperCase()+'</span><div class="body">'+
+    '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'+tag(p.shift)+(done?'<span class="pill p-done">Done ✓</span>':pill(p.ty))+'</div>'+
+    '<h4>'+p.t+'</h4><p>'+(p.tm?p.tm+" · ":"")+p.d+'</p></div>'+
+    (interactive&&p.ty!=="rest"?'<button class="btn btn-ghost btn-sm" style="align-self:center" onclick="toggleDone(\''+p.date+'\',\''+p.t.replace(/'/g,"")+'\',\''+p.ty+'\')">'+(done?"Undo":"Done")+'</button>':"")+'</div>';
+}
+function renderToday(){
+  const plan=buildPlan(),p=plan[0],done=isDone(p.date);
+  const FUEL={N:"Main meal 17:00 · light snack ~01:00 · caffeine cutoff 02:00",D:"Normal meals · protein within an hour of training",L:"Main meal 12:30 · nothing heavy after 21:00",O:"Eat to daylight hours — meals re-anchor the body clock"};
+  $("v-today").innerHTML=
+    '<p class="kicker">'+new Date().toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"})+'</p>'+
+    '<h2 style="font-size:24px;margin:6px 0 16px">'+(S.profile&&S.profile.name?"Hey "+S.profile.name+".":"Today.")+'</h2>'+
+    '<div class="card" style="border-color:'+(done?"rgba(120,200,140,.4)":"rgba(255,77,20,.4)")+'">'+
+      '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'+tag(p.shift)+(done?'<span class="pill p-done">Done ✓</span>':pill(p.ty))+'</div>'+
+      '<h3 style="font-size:19px;margin:10px 0 4px">'+p.t+'</h3>'+
+      '<p class="muted" style="font-size:13.5px">'+(p.tm?p.tm+" · ":"")+p.d+'</p>'+
+      (p.ty!=="rest"?'<button class="btn" style="margin-top:16px" onclick="toggleDone(\''+p.date+'\',\''+p.t.replace(/'/g,"")+'\',\''+p.ty+'\')">'+(done?"Undo ✓ Logged":"Complete session")+'</button>':"")+
+    '</div>'+
+    '<div class="card" style="margin-top:12px"><p class="kicker" style="font-size:11px">Fuel today</p><p style="font-size:13.5px;margin-top:6px">'+FUEL[p.shift]+'</p></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px">'+
+      '<div class="metric"><b>'+streak()+'</b><span>day streak</span></div>'+
+      '<div class="metric"><b>'+S.log.length+'</b><span>sessions logged</span></div>'+
+      '<div class="metric"><b>'+plan.filter(x=>x.ty==="key").length+'</b><span>key this fortnight</span></div>'+
+    '</div>'+
+    '<p class="muted" style="font-size:11.5px;margin-top:16px;text-align:center">Wellness guidance only — not medical advice.</p>';
+}
+function renderRoster(){
+  $("v-roster").innerHTML='<h2 style="font-size:22px;margin-bottom:4px">Your roster</h2><p class="muted" style="font-size:13px;margin-bottom:14px">Tap a day to change it — the plan rebuilds instantly.</p>'+
+  '<div id="app-photo"></div><div class="rgrid" id="app-roster" style="margin-top:12px"></div>';
+  const pw=$("app-photo");
+  if(S.photo){pw.innerHTML='<img src="'+S.photo+'" alt="Roster photo" style="max-height:90px;border-radius:12px;border:1px solid var(--line);cursor:pointer" onclick="bigPhoto()"><p class="muted" style="font-size:11px;margin:4px 0 8px">Your roster photo — tap to enlarge</p>';}
+  else{pw.innerHTML='<label class="btn btn-ghost" style="font-size:14px;margin-bottom:4px">📷 Upload roster photo<input type="file" accept="image/*" style="display:none" onchange="photoPick(event)"></label>';}
+  rosterGrid("app-roster",true);
+}
+function renderPlan(){
+  const plan=buildPlan();
+  $("v-plan").innerHTML='<h2 style="font-size:22px;margin-bottom:4px">Your fortnight</h2><p class="muted" style="font-size:13px">'+
+    (S.goals.run?('Paces from your '+S.goals.dist+' km goal: easy '+paces().easy+' · tempo '+paces().tempo):'Strength-focused block')+'</p>'+
+    '<p class="week-head">Week 1 · Base</p>'+plan.slice(0,7).map(p=>sessionRow(p,true)).join("")+
+    '<p class="week-head">Week 2 · Build</p>'+plan.slice(7).map(p=>sessionRow(p,true)).join("");
+}
+function renderProgress(){
+  const days=[...Array(28)].map((_,i)=>addDays(todayISO(),-27+i));
+  const weeks=[0,1,2,3].map(w=>{
+    const slice=days.slice(w*7,w*7+7);
+    return slice.filter(d=>isDone(d)).length;
+  });
+  const hist=[...S.log].sort((a,b)=>b.date<a.date?-1:1).slice(0,20);
+  $("v-progress").innerHTML='<h2 style="font-size:22px;margin-bottom:14px">Progress</h2>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'+
+      '<div class="metric"><b>'+streak()+'</b><span>day streak</span></div>'+
+      '<div class="metric"><b>'+S.log.filter(l=>l.ty==="key").length+'</b><span>key sessions</span></div>'+
+      '<div class="metric"><b>'+S.log.length+'</b><span>total logged</span></div>'+
+    '</div>'+
+    '<div class="card" style="margin-top:12px"><p class="kicker" style="font-size:11px">Sessions per week — last 4 weeks</p>'+
+      '<div class="adh">'+weeks.map(n=>'<div style="height:100%"><i style="height:'+Math.min(100,n/7*100)+'%"></i></div>').join("")+'</div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px"><span>-4w</span><span>-3w</span><span>-2w</span><span>this wk</span></div></div>'+
+    '<p class="week-head">History</p>'+
+    (hist.length?hist.map(l=>'<div class="srow"><span class="dd">'+fmtDay(l.date).toUpperCase()+'</span><div class="body"><h4>'+l.title+'</h4><p>'+pill(l.ty)+'</p></div></div>').join("")
+      :'<div class="card"><p class="muted" style="font-size:13.5px">Nothing logged yet. Your first session is one tap away on the Today tab.</p></div>');
+}
+function renderProfile(){
+  const g=S.goals;
+  $("v-profile").innerHTML='<h2 style="font-size:22px;margin-bottom:14px">Profile</h2>'+
+    '<div class="card"><b style="font-family:var(--fd);font-size:16px">'+(S.profile?S.profile.name:"")+'</b>'+
+    '<p class="muted" style="font-size:12.5px">'+(S.profile?S.profile.role+" · "+S.profile.email:"")+'</p></div>'+
+    '<p class="week-head">Goals</p><div class="card">'+
+    '<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0"><span>Running goal</span><input type="checkbox" '+(g.run?"checked":"")+' onchange="S.goals.run=this.checked;save();renderAll()" style="width:20px;height:20px;accent-color:var(--orange)"></label>'+
+    (g.run?('<label class="label">Distance</label><div class="seg"><button class="'+(g.dist===5?"on":"")+'" onclick="S.goals.dist=5;save();renderAll()">5 km</button><button class="'+(g.dist===10?"on":"")+'" onclick="S.goals.dist=10;save();renderAll()">10 km</button></div>'+
+    '<label class="label">Target time</label><input class="input" value="'+fmtSec(g.targetSec)+'" onchange="setTarget(this.value)" inputmode="numeric">'):"")+
+    '<label style="display:flex;justify-content:space-between;align-items:center;padding:14px 0 6px"><span>Strength</span><input type="checkbox" '+(g.lift?"checked":"")+' onchange="S.goals.lift=this.checked;save();renderAll()" style="width:20px;height:20px;accent-color:var(--orange)"></label>'+
+    '<label class="label">Max sessions/week: <b style="color:var(--text)">'+g.cap+'</b></label>'+
+    '<input type="range" min="3" max="6" step="1" value="'+g.cap+'" style="width:100%;accent-color:var(--orange)" oninput="S.goals.cap=+this.value;save();renderAll()">'+
+    '</div>'+
+    '<p class="week-head">Data</p><div class="card">'+
+    '<button class="btn btn-ghost" onclick="exportData()">Export my data (JSON)</button>'+
+    (S.photo?'<button class="btn btn-ghost" style="margin-top:10px" onclick="S.photo=null;save();renderAll()">Remove roster photo</button>':"")+
+    '<button class="btn btn-ghost" style="margin-top:10px;border-color:rgba(240,90,90,.4);color:#f09090" onclick="resetApp()">Reset app</button></div>'+
+    '<p class="muted" style="font-size:11.5px;margin-top:16px;text-align:center">Strongshift beta · local-only data · not medical advice<br>hello@strongshift.app</p>';
+}
+function fmtSec(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function setTarget(v){const m=v.match(/^(\d{1,3}):(\d{2})$/);if(m){S.goals.targetSec=(+m[1])*60+(+m[2]);save();}renderAll();}
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="strongshift-data.json";a.click();
+}
+function resetApp(){if(confirm("Delete all local data and start over?")){localStorage.removeItem(KEY);location.reload();}}
+function bigPhoto(){$("photo-big").src=S.photo;$("photo-overlay").classList.add("on");}
+$("photo-overlay").onclick=()=>$("photo-overlay").classList.remove("on");
+function photoPick(e){
+  const f=e.target.files[0];if(!f)return;
+  const img=new Image();
+  img.onload=()=>{
+    const c=document.createElement("canvas");const sc=Math.min(1,1200/img.width);
+    c.width=img.width*sc;c.height=img.height*sc;
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    S.photo=c.toDataURL("image/jpeg",.7);save();
+    if($("s-app").classList.contains("on"))renderRoster();
+    else{$("r-photo-wrap").style.display="block";$("r-photo-img").src=S.photo;}
+  };
+  img.src=URL.createObjectURL(f);
+}
+function renderAll(scroll){
+  renderToday();renderRoster();renderPlan();renderProgress();renderProfile();
+}
+/* ================= NAV ================= */
+document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabbar button").forEach(x=>x.classList.toggle("on",x===b));
+  ["today","roster","plan","progress","profile"].forEach(v=>$("v-"+v).style.display=(v===b.dataset.v?"block":"none"));
+  window.scrollTo(0,0);
+});
+/* ================= AUTH + ONBOARDING ================= */
+let role=null;
+$("a-role").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  role=b.dataset.v;$("a-role").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+});
+$("a-go").onclick=()=>{
+  const name=$("a-name").value.trim(),email=$("a-email").value.trim();
+  if(!name||!/.+@.+\..+/.test(email)||!role){alert("Fill in your name, a valid email, and pick a role.");return;}
+  S.profile={name,email,role};save();
+  obStep(1);show("s-onboard");
+};
+function obStep(n){
+  [1,2,3].forEach(i=>{$("ob"+i).style.display=(i===n?"block":"none");$("st"+i).classList.toggle("on",i<=n);});
+  if(n===2)rosterGrid("ob-roster",true);
+  if(n===3){
+    const plan=buildPlan();
+    $("ob3-sum").textContent=plan.filter(p=>p.ty==="key").length+" key sessions placed around your shifts this fortnight.";
+    $("ob3-preview").innerHTML=plan.slice(0,4).map(p=>sessionRow(p,false)).join("");
+  }
+  window.scrollTo(0,0);
+}
+let dist=10;
+$("g-dist").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  dist=+b.dataset.v;$("g-dist").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  $("g-time").placeholder=dist===10?"50:00":"22:00";
+});
+$("g-run").onchange=e=>$("run-detail").style.display=e.target.checked?"block":"none";
+$("g-cap").oninput=e=>$("g-cap-out").textContent=e.target.value;
+$("ob1-go").onclick=()=>{
+  const run=$("g-run").checked,lift=$("g-lift").checked;
+  let targetSec=dist===10?3000:1320;
+  const m=$("g-time").value.match(/^(\d{1,3}):(\d{2})$/);
+  if(m)targetSec=(+m[1])*60+(+m[2]);
+  else if(run&&$("g-time").value.trim()){alert("Time format is mm:ss, e.g. 50:00");return;}
+  S.goals={run,dist,targetSec,lift,cap:+$("g-cap").value};save();
+  obStep(2);
+};
+$("r-photo").onchange=photoPick;
+$("r-photo-img").onclick=bigPhoto;
+$("ob2-go").onclick=()=>{save();obStep(3);};
+$("ob3-go").onclick=()=>{S.onboarded=true;save();renderAll();show("s-app");};
+/* ================= BOOT ================= */
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+if(S.onboarded&&S.profile){renderAll();show("s-app");}
+else if(S.profile){obStep(1);show("s-onboard");}
+else show("s-auth");
+</script>
+</body>
+</html>
