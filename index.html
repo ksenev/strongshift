@@ -72,6 +72,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .nav-links{display:flex;align-items:center;gap:32px;font-size:15px;font-weight:500;color:var(--muted)}
 .nav-links a:hover{color:var(--text)}
 .nav-cta{margin-left:8px;padding:10px 20px;font-size:14px}
+.nav-cta-m{display:none;padding:9px 18px;font-size:14px}
+@media (max-width:960px){
+  .nav-inner{justify-content:flex-start}
+  .logo{margin-right:auto}
+  .nav-cta-m{display:inline-flex}
+}
+@media (max-width:560px){
+  .nav-cta-m{padding:8px 14px;font-size:13px}
+}
 .burger{display:none;background:none;border:none;cursor:pointer;padding:8px}
 .burger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;border-radius:2px;transition:.3s}
 .mobile-menu{display:none;flex-direction:column;gap:4px;padding:12px 24px 20px;border-top:1px solid var(--line);background:rgba(10,10,11,.97)}
@@ -334,6 +343,7 @@ nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
       <a href="#faq">FAQ</a>
       <a class="btn btn-primary nav-cta" href="#waitlist">Join waitlist</a>
     </div>
+    <a class="btn btn-primary nav-cta-m" href="#waitlist">Join waitlist</a>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -689,6 +699,13 @@ document.querySelectorAll('form[data-wl]').forEach(form=>{
     });
   });
 });
+
+// deep-link support (e.g. /#demo from Instagram bio)
+if(location.hash){
+  addEventListener('load',()=>setTimeout(()=>{
+    try{const t=document.querySelector(location.hash);if(t)t.scrollIntoView({block:'start'})}catch(e){}
+  },250));
+}
 
 const navEl=document.querySelector('nav');
 const onScroll=()=>navEl.classList.toggle('scrolled',scrollY>24);
