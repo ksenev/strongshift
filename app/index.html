@@ -18,7 +18,16 @@
   --bg:#0f1115;--bg2:#14161c;--surface:#191b21;--surface2:#23252d;--line:#2c2e37;
   --text:#f4f2ef;--muted:#9da0a7;--orange:#ff4d14;--orange-soft:#ff7a3d;--orange-dim:rgba(255,77,20,.14);
   --green:#7bcf92;--green-dim:rgba(120,200,140,.12);--night:#9f9fff;--night-dim:#1d1d3a;
+  --chip:#23252d;--late:#ffd166;--late-dim:rgba(255,200,60,.13);--prev:#4a4d58;
+  --topbar:rgba(15,17,21,.85);--tabbar:rgba(20,22,28,.95);--danger:#f09090;--danger-line:rgba(240,90,90,.4);
   --fd:'Space Grotesk',system-ui,sans-serif;--fb:'Inter',system-ui,sans-serif;
+}
+html[data-theme="light"]{
+  --bg:#f4f5f7;--bg2:#ffffff;--surface:#ffffff;--surface2:#eceef1;--line:#d9dbe1;
+  --text:#17181c;--muted:#5f6269;--orange:#ff4d14;--orange-soft:#c2410c;--orange-dim:rgba(255,77,20,.12);
+  --green:#1e7a44;--green-dim:rgba(30,150,80,.12);--night:#5354c9;--night-dim:rgba(84,84,210,.12);
+  --chip:#e6e8ec;--late:#8a6a00;--late-dim:rgba(255,200,60,.3);--prev:#b4b7c0;
+  --topbar:rgba(244,245,247,.85);--tabbar:rgba(255,255,255,.95);--danger:#c0392b;--danger-line:rgba(200,60,50,.4);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{overflow-x:hidden}
@@ -47,22 +56,22 @@ input,select{font-family:var(--fb)}
 .p-key{background:var(--orange-dim);color:var(--orange-soft)}
 .p-easy{background:var(--green-dim);color:var(--green)}
 .p-rec{background:var(--night-dim);color:var(--night)}
-.p-rest{background:#23252d;color:var(--muted)}
+.p-rest{background:var(--chip);color:var(--muted)}
 .p-done{background:var(--green-dim);color:var(--green)}
 .tag{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
 .t-day{background:rgba(255,122,61,.15);color:var(--orange-soft)}
-.t-late{background:rgba(255,200,60,.13);color:#ffd166}
+.t-late{background:var(--late-dim);color:var(--late)}
 .t-night{background:var(--night-dim);color:var(--night)}
-.t-off{background:#23252d;color:var(--muted)}
+.t-off{background:var(--chip);color:var(--muted)}
 .seg{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px;flex-wrap:wrap}
 .seg button{flex:1;min-width:70px;background:transparent;border:none;border-radius:10px;padding:11px 4px;color:var(--muted);font-weight:600;font-size:13.5px}
 .seg button.on{background:var(--orange);color:#0f1115}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(15,17,21,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.topbar{position:sticky;top:0;z-index:20;background:var(--topbar);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
 .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .logo{font-family:var(--fd);font-weight:700;font-size:18px}
 .logo em{font-style:normal;color:var(--orange)}
 .beta{font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--orange-dim);color:var(--orange-soft);padding:3px 8px;border-radius:6px}
-.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(20,22,28,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--tabbar);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 .tabbar .inner{max-width:520px;margin:0 auto;display:flex}
 .tabbar button{flex:1;background:none;border:none;padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:10.5px;font-weight:600}
 .tabbar button.on{color:var(--orange)}
@@ -71,7 +80,14 @@ input,select{font-family:var(--fb)}
 .steps span{flex:1;height:4px;border-radius:4px;background:var(--surface2)}
 .steps span.on{background:var(--orange)}
 .rgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.rday{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--text)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:7px 6px}
+.cal-h{font-family:var(--fd);font-size:10.5px;font-weight:600;color:var(--muted);text-align:center}
+.cday{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 2px 10px;text-align:center;color:var(--text)}
+.cday.sel{border-color:var(--orange)}
+.cday b{display:block;font-family:var(--fd);font-size:13.5px;margin-bottom:7px}
+.ct{display:block;font-family:var(--fd);font-size:9px;font-weight:700;letter-spacing:.03em;border-radius:6px;padding:3px 0;margin:0 4px}
+.lgd{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+.rday{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--text);text-align:left}
 .rday b{font-family:var(--fd);font-size:13px;font-weight:600}
 .rday small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}
 .srow{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:9px}
@@ -94,7 +110,7 @@ input,select{font-family:var(--fb)}
 .conn .ci{width:38px;height:38px;border-radius:11px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:17px}
 .conn b{font-size:14px;font-family:var(--fd)}
 .conn small{display:block;font-size:11px;color:var(--muted)}
-.soon{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.05em;background:#23252d;color:var(--muted);padding:4px 9px;border-radius:7px;white-space:nowrap}
+.soon{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.05em;background:var(--chip);color:var(--muted);padding:4px 9px;border-radius:7px;white-space:nowrap}
 .week-head{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--muted);margin:20px 0 10px}
 .adh{display:flex;gap:5px;align-items:flex-end;height:64px;margin-top:10px}
 .adh>div{flex:1;background:var(--surface2);border-radius:6px 6px 0 0;position:relative;height:100%}
@@ -176,7 +192,7 @@ input,select{font-family:var(--fb)}
       <p class="muted" style="font-size:13.5px">Next 14 days. Tap a day to cycle Off → Day → Late → Night.</p>
       <div style="margin:14px 0">
         <label class="btn btn-ghost" style="font-size:14px">
-          📷 Upload roster photo (optional)
+          📷 Upload roster (optional)
           <input type="file" id="r-photo" accept="image/*" style="display:none">
         </label>
         <div id="r-photo-wrap" style="display:none;margin-top:10px;text-align:center">
@@ -184,7 +200,7 @@ input,select{font-family:var(--fb)}
           <p class="muted" style="font-size:11.5px;margin-top:6px">Tap to enlarge while you transcribe. Auto-parsing lands in a future update.</p>
         </div>
       </div>
-      <div class="rgrid" id="ob-roster"></div>
+      <div id="ob-roster"></div>
       <div class="btn-row">
         <button class="btn btn-ghost" id="ob2-back">← Back</button>
         <button class="btn" id="ob2-go">Next</button>
@@ -289,7 +305,7 @@ input,select{font-family:var(--fb)}
 const KEY="strongshift_v1";
 const DEFG={run:true,dist:10,targetSec:3000,lift:true,focus:"general",cap:5};
 const DEFST={D:{s:"07:00",e:"19:00"},L:{s:"14:00",e:"22:30"},N:{s:"19:00",e:"07:00"}};
-const DEFPREFS={units:"km",notifSession:true,notifWeekly:true,lang:"en"};
+const DEFPREFS={units:"km",notifSession:true,notifWeekly:true,lang:"en",theme:"dark"};
 const DEF={profile:null,goals:DEFG,rosterStart:null,roster:[],photo:null,log:[],onboarded:false,shiftTimes:DEFST,prefs:DEFPREFS,signedOut:false,notifSeen:""};
 let S=load();
 function load(){
@@ -532,16 +548,46 @@ const $=id=>document.getElementById(id);
 function show(screen){["s-auth","s-onboard","s-app"].forEach(s=>$(s).classList.toggle("on",s===screen));window.scrollTo(0,0);}
 function pill(ty){const m={key:["Key","p-key"],easy:["Easy","p-easy"],rec:["Recovery","p-rec"],rest:["Rest","p-rest"],lift:["Lift","p-key"],other:["Extra","p-easy"]}[ty]||["Extra","p-easy"];return '<span class="pill '+m[1]+'">'+m[0]+'</span>';}
 function tag(s){return '<span class="tag '+SHIFT[s].t+'">'+SHIFT[s].n+'</span>';}
+let selDay=0;
+function calMonthLabel(){
+  const a=new Date(S.rosterStart+"T12:00:00"),b=new Date(addDays(S.rosterStart,13)+"T12:00:00");
+  if(a.getMonth()===b.getMonth())return a.toLocaleDateString("en-AU",{month:"long",year:"numeric"});
+  return a.toLocaleDateString("en-AU",{month:"long"})+" – "+b.toLocaleDateString("en-AU",{month:"long",year:"numeric"});
+}
 function rosterGrid(elId,editable){
   rollRoster();
-  $(elId).innerHTML=S.roster.map((s,i)=>{
-    const iso=addDays(S.rosterStart,i);
-    return '<button class="rday" data-i="'+i+'"><span><b>'+fmtDay(iso)+'</b><small>'+(s==="O"?"day off":shiftTimeStr(s))+'</small></span>'+tag(s)+'</button>';
-  }).join("");
-  if(editable)$(elId).querySelectorAll(".rday").forEach(b=>b.onclick=()=>{
-    const i=+b.dataset.i;S.roster[i]=CYCLE[S.roster[i]];save();rosterGrid(elId,true);
+  if(selDay>13||selDay<0)selDay=0;
+  const lead=(new Date(S.rosterStart+"T12:00:00").getDay()+6)%7;
+  const CT={D:"DAY",L:"LATE",N:"NIGHT",O:"OFF"};
+  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
+    '<span style="font-family:var(--fd);font-weight:600;font-size:13px">'+calMonthLabel()+'</span>'+
+    '<span style="display:flex;gap:10px;font-size:10px;color:var(--muted)">'+
+      '<span><span class="lgd" style="background:var(--orange-soft)"></span>Day</span>'+
+      '<span><span class="lgd" style="background:var(--late)"></span>Late</span>'+
+      '<span><span class="lgd" style="background:var(--night)"></span>Night</span>'+
+    '</span></div>'+
+    '<div class="cal" style="margin-bottom:9px">'+["M","T","W","T","F","S","S"].map(d=>'<span class="cal-h">'+d+'</span>').join("")+'</div>'+
+    '<div class="cal">'+'<span></span>'.repeat(lead)+
+    S.roster.map((s,i)=>{
+      const d=new Date(addDays(S.rosterStart,i)+"T12:00:00");
+      return '<button class="cday'+(i===selDay&&editable?' sel':'')+'" data-i="'+i+'" aria-label="'+fmtDay(addDays(S.rosterStart,i))+'">'+
+        '<b'+(i===0?' style="color:var(--orange)"':'')+'>'+d.getDate()+'</b>'+
+        '<span class="ct '+SHIFT[s].t+'">'+CT[s]+'</span></button>';
+    }).join("")+'</div>';
+  $(elId).innerHTML=h;
+  if(editable)$(elId).querySelectorAll(".cday").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i;selDay=i;S.roster[i]=CYCLE[S.roster[i]];save();rosterGrid(elId,true);
     if($("s-app").classList.contains("on"))renderAll();
   });
+}
+function rosterDetail(){
+  const i=selDay,s=S.roster[i],iso=addDays(S.rosterStart,i);
+  const p=buildPlan()[i];
+  const dstr=new Date(iso+"T12:00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"long"});
+  return '<div class="card" style="margin-top:16px"><p class="kicker" style="font-size:11px">Selected · '+dstr+'</p>'+
+    '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px">'+tag(s)+(isDone(p.date)?'<span class="pill p-done">Done ✓</span>':pill(p.ty))+'</div>'+
+    '<p style="font-size:13.5px;margin-top:8px"><b style="font-family:var(--fd)">'+(s==="O"?"Day off":SHIFT[s].n+" shift · "+shiftTimeStr(s))+'</b></p>'+
+    '<p class="muted" style="font-size:12.5px;margin-top:2px">'+p.t+(p.tm?" · "+p.tm:"")+'</p></div>';
 }
 function doneBtn(p){
   const done=isDone(p.date);
@@ -582,11 +628,12 @@ function renderToday(){
 }
 function renderRoster(){
   $("v-roster").innerHTML='<h2 style="font-size:22px;margin-bottom:4px">Your roster</h2><p class="muted" style="font-size:13px;margin-bottom:14px">Tap a day to cycle Off → Day → Late → Night — the plan rebuilds instantly.</p>'+
-  '<div id="app-photo"></div><div class="rgrid" id="app-roster" style="margin-top:12px"></div>';
-  const pw=$("app-photo");
-  if(S.photo){pw.innerHTML='<img src="'+S.photo+'" alt="Roster photo" style="max-height:90px;border-radius:12px;border:1px solid var(--line);cursor:pointer" onclick="bigPhoto()"><p class="muted" style="font-size:11px;margin:4px 0 8px">Your roster photo — tap to enlarge</p>';}
-  else{pw.innerHTML='<label class="btn btn-ghost" style="font-size:14px;margin-bottom:4px">📷 Upload roster photo<input type="file" accept="image/*" style="display:none" onchange="photoPick(event)"></label>';}
+  '<div id="app-roster"></div><div id="app-roster-detail"></div><div id="app-photo" style="margin-top:16px"></div>';
   rosterGrid("app-roster",true);
+  $("app-roster-detail").innerHTML=rosterDetail();
+  const pw=$("app-photo");
+  if(S.photo){pw.innerHTML='<img src="'+S.photo+'" alt="Roster photo" style="max-height:90px;border-radius:12px;border:1px solid var(--line);cursor:pointer" onclick="bigPhoto()"><p class="muted" style="font-size:11px;margin-top:4px">Your roster — tap to enlarge</p>';}
+  else{pw.innerHTML='<label class="btn btn-ghost" style="font-size:14px">📷 Upload roster<input type="file" accept="image/*" style="display:none" onchange="photoPick(event)"></label>';}
 }
 function renderPlan(){
   const plan=buildPlan();
@@ -631,7 +678,7 @@ function lineChart(cur,prev,metric){
   const area=path(vals)+" L"+X(vals.length-1).toFixed(1)+" "+Y(0)+" L"+X(0).toFixed(1)+" "+Y(0)+" Z";
   const lastX=X(vals.length-1).toFixed(1),lastY=Y(vals[vals.length-1]).toFixed(1);
   return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block" role="img" aria-label="'+METRICS[metric]+' trend">'+grid+
-    '<path d="'+path(pvals)+'" fill="none" stroke="#4a4d58" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+    '<path d="'+path(pvals)+'" fill="none" stroke="var(--prev)" stroke-width="1.5" stroke-dasharray="4 4"/>'+
     '<path d="'+area+'" fill="rgba(255,77,20,.08)"/>'+
     '<path d="'+path(vals)+'" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+
     '<circle cx="'+lastX+'" cy="'+lastY+'" r="3.5" fill="var(--orange)"/>'+
@@ -675,7 +722,7 @@ function renderProgress(){
       '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px"><span>'+bucketLabel(cur[0].end)+'</span><span>'+bucketLabel(cur[cur.length-1].end)+'</span></div>'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px;flex-wrap:wrap">'+
         '<div class="seg" style="flex:1;min-width:180px">'+Object.keys(METRICS).map(m=>'<button class="'+(m===progMetric?"on":"")+'" style="padding:8px 4px" onclick="setProg(\'m\',\''+m+'\')">'+mlabels[m]+'</button>').join("")+'</div></div>'+
-      '<p class="muted" style="font-size:10.5px;margin-top:8px"><span style="color:var(--orange)">━</span> this period&nbsp;&nbsp;<span style="color:#4a4d58">╌╌</span> previous period</p>'+
+      '<p class="muted" style="font-size:10.5px;margin-top:8px"><span style="color:var(--orange)">━</span> this period&nbsp;&nbsp;<span style="color:var(--prev)">╌╌</span> previous period</p>'+
       '<div class="chiprow">'+
         '<span>This week: <b>'+last7.length+'</b>'+(planned7?' of <b>'+planned7+'</b> planned':'')+'</span>'+
         '<span>Key: <b>'+S.log.filter(l=>l.ty==="key").length+'</b></span>'+
@@ -697,7 +744,12 @@ function renderProgress(){
       '<p style="margin-top:4px">'+pill(l.ty)+'</p></div></div>').join("")
       :'<div class="card"><p class="muted" style="font-size:13.5px">Nothing logged yet. Your first session is one tap away on the Today tab.</p></div>');
 }
-function setPref(k,v){S.prefs[k]=v;save();renderAll();}
+function applyTheme(){
+  document.documentElement.dataset.theme=S.prefs.theme||"dark";
+  const m=document.querySelector('meta[name="theme-color"]');
+  if(m)m.content=S.prefs.theme==="light"?"#f4f5f7":"#0f1115";
+}
+function setPref(k,v){S.prefs[k]=v;save();if(k==="theme")applyTheme();renderAll();}
 function setShiftTime(c,k,v){if(v){S.shiftTimes[c][k]=v;save();renderAll();}}
 function picPick(e){
   const f=e.target.files[0];if(!f)return;
@@ -748,7 +800,9 @@ function renderProfile(){
     '</div>').join("")+
     '<p class="muted" style="font-size:11px;margin-top:10px">Night shifts can end past midnight — enter the clock times as rostered.</p></div>'+
     '<p class="week-head">Preferences</p><div class="card">'+
-    '<label class="label" style="margin-top:0">Units</label>'+
+    '<label class="label" style="margin-top:0">Appearance</label>'+
+    '<div class="seg">'+[["dark","Dark"],["light","Light"]].map(x=>'<button class="'+((S.prefs.theme||"dark")===x[0]?"on":"")+'" onclick="setPref(\'theme\',\''+x[0]+'\')">'+x[1]+'</button>').join("")+'</div>'+
+    '<label class="label">Units</label>'+
     '<div class="seg">'+[["km","Kilometres"],["mi","Miles"]].map(x=>'<button class="'+(S.prefs.units===x[0]?"on":"")+'" onclick="setPref(\'units\',\''+x[0]+'\')">'+x[1]+'</button>').join("")+'</div>'+
     '<p class="muted" style="font-size:11px;margin-top:6px">Applies to logging and stats. Training paces stay min/km for now.</p>'+
     '<label class="label">Notifications</label>'+
@@ -766,7 +820,7 @@ function renderProfile(){
     '</div>'+
     '<p class="week-head">Account</p><div class="card">'+
     '<button class="btn btn-ghost" onclick="signOut()">Sign out</button>'+
-    '<button class="btn btn-ghost" style="margin-top:10px;border-color:rgba(240,90,90,.4);color:#f09090" onclick="deleteAccount()">Delete account</button>'+
+    '<button class="btn btn-ghost" style="margin-top:10px;border-color:var(--danger-line);color:var(--danger)" onclick="deleteAccount()">Delete account</button>'+
     '<p class="muted" style="font-size:11px;margin-top:10px">Signing out keeps your data on this device. Deleting your account removes everything permanently.</p></div>'+
     '<p style="text-align:center;margin-top:18px;font-size:12.5px"><a href="#" onclick="openLegal(\'terms\');return false" style="color:var(--muted)">Terms &amp; Conditions</a><span class="muted"> · </span><a href="#" onclick="openLegal(\'privacy\');return false" style="color:var(--muted)">Privacy Policy</a></p>'+
     '<p class="muted" style="font-size:11.5px;margin-top:10px;text-align:center">Strongshift beta · local-only data · not medical advice<br>hello@strongshift.app</p>';
@@ -892,6 +946,7 @@ $("import-sheet").addEventListener("click",e=>{if(e.target.id==="import-sheet")c
 $("notif-sheet").addEventListener("click",e=>{if(e.target.id==="notif-sheet")closeNotif();});
 $("legal-sheet").addEventListener("click",e=>{if(e.target.id==="legal-sheet")$("legal-sheet").classList.remove("on");});
 /* ================= BOOT ================= */
+applyTheme();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 if(S.onboarded&&S.profile&&!S.signedOut){renderAll();show("s-app");}
 else if(S.profile&&!S.signedOut){obStep(1);show("s-onboard");}
