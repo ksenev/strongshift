@@ -1,4 +1,4 @@
-const CACHE = "strongshift-v1";
+const CACHE = "strongshift-v2";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {
