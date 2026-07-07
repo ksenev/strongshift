@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0f1115;--bg2:#14161c;--surface:#191b21;--surface2:#23252d;--line:#2c2e37;
@@ -20,7 +20,7 @@
   --green:#7bcf92;--green-dim:rgba(120,200,140,.12);--night:#9f9fff;--night-dim:#1d1d3a;
   --chip:#23252d;--late:#ffd166;--late-dim:rgba(255,200,60,.13);--prev:#4a4d58;
   --topbar:rgba(15,17,21,.85);--tabbar:rgba(20,22,28,.95);--danger:#f09090;--danger-line:rgba(240,90,90,.4);
-  --fd:'Space Grotesk',system-ui,sans-serif;--fb:'Inter',system-ui,sans-serif;
+  --fd:'Bricolage Grotesque',system-ui,sans-serif;--fb:'Source Sans 3',system-ui,sans-serif;
 }
 html[data-theme="light"]{
   --bg:#f4f5f7;--bg2:#ffffff;--surface:#ffffff;--surface2:#eceef1;--line:#d9dbe1;
@@ -131,15 +131,22 @@ input,select{font-family:var(--fb)}
       <p class="muted" style="margin-top:8px;font-size:15px">Training that adapts to your roster.</p>
     </div>
     <div class="card fade">
-      <h2 style="font-size:20px">Create your account</h2>
-      <p class="muted" style="font-size:13px;margin-top:4px">Beta: your data is stored on this device only. Cloud accounts arrive with the full launch.</p>
-      <label class="label" for="a-name">First name</label>
-      <input class="input" id="a-name" placeholder="Kal" autocomplete="given-name">
+      <div class="seg" id="a-mode">
+        <button data-v="up" class="on">Create account</button><button data-v="in">Sign in</button>
+      </div>
+      <h2 style="font-size:20px;margin-top:16px" id="a-title">Create your account</h2>
+      <p class="muted" style="font-size:13px;margin-top:4px" id="a-sub">Beta: your data is stored on this device only. Cloud accounts arrive with the full launch.</p>
+      <div id="a-up-name">
+        <label class="label" for="a-name">First name</label>
+        <input class="input" id="a-name" placeholder="Kal" autocomplete="given-name">
+      </div>
       <label class="label" for="a-email">Email</label>
       <input class="input" id="a-email" type="email" placeholder="you@nightshift.com" autocomplete="email">
-      <label class="label">What do you do?</label>
-      <div class="seg" id="a-role">
-        <button data-v="Nurse">Nurse</button><button data-v="Doctor">Doctor</button><button data-v="Paramedic">Paramedic</button><button data-v="Other">Other</button>
+      <div id="a-up-role">
+        <label class="label">What do you do?</label>
+        <div class="seg" id="a-role">
+          <button data-v="Nurse">Nurse</button><button data-v="Doctor">Doctor</button><button data-v="Paramedic">Paramedic</button><button data-v="Other">Other</button>
+        </div>
       </div>
       <button class="btn" id="a-go" style="margin-top:22px">Continue</button>
     </div>
@@ -323,8 +330,17 @@ function load(){
 const MI=0.621371;
 function unitLbl(){return S.prefs.units==="mi"?"mi":"km";}
 function unitDist(km){return Math.round((S.prefs.units==="mi"?km*MI:km)*10)/10;}
+function distStr(km){return unitDist(km)+" "+unitLbl();}
 function toKm(v){return S.prefs.units==="mi"?v/MI:v;}
 function shiftTimeStr(code){const st=S.shiftTimes[code];return st?st.s+"–"+st.e:"";}
+/* suggested session times derived from the user's shift times */
+function timeAdd(hm,min){
+  const[h,m]=hm.split(":").map(Number);
+  const t=((h*60+m+min)%1440+1440)%1440;
+  return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
+}
+function beforeShift(code,lead){const t=timeAdd(S.shiftTimes[code].s,-lead);return t<"06:00"?"06:00":t;}
+function afterShift(code,gap){return timeAdd(S.shiftTimes[code].e,gap);}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert("Storage full — remove the roster photo in Profile to free space.");}}
 function todayISO(){const d=new Date();return d.toISOString().slice(0,10);}
 function addDays(iso,n){const d=new Date(iso+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
@@ -339,7 +355,7 @@ function rollRoster(){
 /* ================= ENGINE ================= */
 const SHIFT={D:{n:"Day",t:"t-day"},L:{n:"Late",t:"t-late"},N:{n:"Night",t:"t-night"},O:{n:"Off",t:"t-off"}};
 const CYCLE={O:"D",D:"L",L:"N",N:"O"};
-const DISTLABEL={5:"5 km",10:"10 km",21.1:"half marathon",42.2:"marathon"};
+function distLabel(d){return d===21.1?"half marathon":d===42.2?"marathon":distStr(d);}
 const FOCUS={
   general:{hint:"Balanced strength — squat, hinge, press, pull.",A:"Strength A — lower body",B:"Strength B — upper + core",
     pool:[["Heavy lower — squat 5×5","Leave 1–2 reps in reserve"],["Upper strength + core","Press + pull supersets"]]},
@@ -359,7 +375,7 @@ function paces(){
   if(!S.goals.run)return null;
   const dist=S.goals.dist,g=S.goals.targetSec/dist;
   const adj={5:{t:12,i:-4,e:70},10:{t:-4,i:-14,e:70},"21.1":{t:-15,i:-25,e:45},"42.2":{t:-25,i:-40,e:40}}[String(dist)];
-  const f=s=>{s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+"/km";};
+  const f=s=>{if(S.prefs.units==="mi")s=s/MI;s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+"/"+unitLbl();};
   return{goal:f(g),easy:f(g+adj.e),tempo:f(g+adj.t),intv:f(g+adj.i)};
 }
 function longKm(wk){
@@ -371,8 +387,8 @@ function longKm(wk){
 function runPool(wk){
   const p=paces();
   return[
-    {t:"Long run — "+longKm(wk)+" km steady",d:"Hold "+p.easy+" · build the engine",tm:"09:00",ty:"key",km:longKm(wk)},
-    {t:"Tempo — 3×2 km",d:"At "+p.tempo+" · 2 min float",tm:"09:30",ty:"key",km:7},
+    {t:"Long run — "+distStr(longKm(wk))+" steady",d:"Hold "+p.easy+" · build the engine",tm:"09:00",ty:"key",km:longKm(wk)},
+    {t:"Tempo — 3×"+distStr(2),d:"At "+p.tempo+" · 2 min float",tm:"09:30",ty:"key",km:7},
     {t:"Intervals — 6×800 m",d:"At "+p.intv+" · 400 m jog recovery",tm:"09:30",ty:"key",km:5}
   ];
 }
@@ -395,17 +411,17 @@ function buildPlan(){
     const p=paces();
     let ses;
     if(s==="N"){
-      if(prev!=="N"&&!cap()){keyN[wk]++;ses={t:S.goals.lift?F.A:"Easy run — 40 min",d:"Train while day-adapted, then nap before the shift",tm:"15:30 · before shift",ty:S.goals.lift?"key":"easy",km:S.goals.lift?undefined:7};}
+      if(prev!=="N"&&!cap()){keyN[wk]++;ses={t:S.goals.lift?F.A:"Easy run — 40 min",d:"Train while day-adapted, then nap before the shift",tm:beforeShift("N",210)+" · before shift",ty:S.goals.lift?"key":"easy",km:S.goals.lift?undefined:7};}
       else ses={t:"Protect sleep",d:"20 min mobility at most. Sleep is the session.",tm:"",ty:"rest"};
     }else if(s==="D"){
       if(prev==="N")ses={t:"Rest — recover from nights",d:"Sleep debt day. Walk if anything.",tm:"",ty:"rest"};
-      else if(prev==="D"&&!cap()){keyN[wk]++;ses=S.goals.lift?{t:F.B,d:"Express session, in and out",tm:"18:00 · after shift",ty:"key"}:{t:"Tempo — 20 min",d:p?("At "+p.tempo):"",tm:"18:00 · after shift",ty:"key",km:5};}
-      else ses={t:"Easy run — 30 min",d:p?("Zone 2, "+p.easy+" or slower"):"Zone 2, conversational",tm:"18:30 · after shift",ty:"easy",km:5};
+      else if(prev==="D"&&!cap()){keyN[wk]++;ses=S.goals.lift?{t:F.B,d:"Express session, in and out",tm:afterShift("D",45)+" · after shift",ty:"key"}:{t:"Tempo — 20 min",d:p?("At "+p.tempo):"",tm:afterShift("D",45)+" · after shift",ty:"key",km:5};}
+      else ses={t:"Easy run — 30 min",d:p?("Zone 2, "+p.easy+" or slower"):"Zone 2, conversational",tm:afterShift("D",60)+" · after shift",ty:"easy",km:5};
     }else if(s==="L"){
-      if(!cap()){keyN[wk]++;ses=S.goals.lift?{t:F.B,d:"Morning session, full recovery before the late",tm:"09:30 · before shift",ty:"key"}:{t:"Intervals — 6×800 m",d:p?("At "+p.intv):"",tm:"09:30 · before shift",ty:"key",km:5};}
-      else ses={t:"Easy run — 30 min",d:"Before your shift",tm:"09:30 · before shift",ty:"easy",km:5};
+      if(!cap()){keyN[wk]++;ses=S.goals.lift?{t:F.B,d:"Morning session, full recovery before the late",tm:beforeShift("L",270)+" · before shift",ty:"key"}:{t:"Intervals — 6×800 m",d:p?("At "+p.intv):"",tm:beforeShift("L",270)+" · before shift",ty:"key",km:5};}
+      else ses={t:"Easy run — 30 min",d:"Before your shift",tm:beforeShift("L",270)+" · before shift",ty:"easy",km:5};
     }else{
-      if(prev==="N")ses={t:"Recovery run — 5 km",d:"After anchor sleep. Daylight resets the clock.",tm:"16:00",ty:"rec",km:5};
+      if(prev==="N")ses={t:"Recovery run — "+distStr(5),d:"After anchor sleep. Daylight resets the clock.",tm:afterShift("N",540),ty:"rec",km:5};
       else if(!cap()){const pl=pools(wk);const x=pl[poolN[wk]%pl.length];poolN[wk]++;if(x.ty==="key")keyN[wk]++;ses=Object.assign({},x);}
       else ses={t:"Full rest",d:"Adaptation happens here, not the gym.",tm:"",ty:"rest"};
     }
@@ -476,8 +492,8 @@ function longestStreak(){
 /* ================= SHARE ================= */
 async function shareCard(kind){
   const c=document.getElementById("share-canvas"),x=c.getContext("2d");
-  const FD=w=>w+"px 'Space Grotesk',sans-serif";
-  try{await Promise.all(["500 40","600 40","700 88"].map(f=>document.fonts.load(f+"px 'Space Grotesk'")));}catch(e){}
+  const FD=w=>w+"px 'Bricolage Grotesque',sans-serif";
+  try{await Promise.all(["500 40","600 40","700 88"].map(f=>document.fonts.load(f+"px 'Bricolage Grotesque'")));}catch(e){}
   x.fillStyle="#0f1115";x.fillRect(0,0,1080,1920);
   x.fillStyle="rgba(255,77,20,.12)";x.beginPath();x.arc(900,200,420,0,7);x.fill();
   x.textAlign="left";
@@ -638,7 +654,7 @@ function renderRoster(){
 function renderPlan(){
   const plan=buildPlan();
   $("v-plan").innerHTML='<h2 style="font-size:22px;margin-bottom:4px">Your fortnight</h2><p class="muted" style="font-size:13px">'+
-    (S.goals.run?('Paces for your '+DISTLABEL[S.goals.dist]+' goal ('+fmtClock(S.goals.targetSec)+'): easy '+paces().easy+' · tempo '+paces().tempo+' · intervals '+paces().intv):'Strength-focused block — '+FOCUS[S.goals.focus].hint)+'</p>'+
+    (S.goals.run?('Paces for your '+distLabel(S.goals.dist)+' goal ('+fmtClock(S.goals.targetSec)+'): easy '+paces().easy+' · tempo '+paces().tempo+' · intervals '+paces().intv):'Strength-focused block — '+FOCUS[S.goals.focus].hint)+'</p>'+
     '<p class="week-head">Week 1 · Base</p>'+plan.slice(0,7).map(p=>sessionRow(p,true)).join("")+
     '<p class="week-head">Week 2 · Build</p>'+plan.slice(7).map(p=>sessionRow(p,true)).join("");
 }
@@ -762,7 +778,7 @@ function picPick(e){
   };
   img.src=URL.createObjectURL(f);
 }
-function signOut(){if(confirm("Sign out? Your data stays on this device.")){S.signedOut=true;save();show("s-auth");}}
+function signOut(){if(confirm("Sign out? Your data stays on this device.")){S.signedOut=true;save();setAuthMode("in");$("a-email").value="";show("s-auth");}}
 function deleteAccount(){if(confirm("Delete your account and all data on this device? This cannot be undone.")){localStorage.removeItem(KEY);location.reload();}}
 const LEGAL={
   terms:{t:"Terms & Conditions",b:"Placeholder — the full Terms & Conditions will be published with the public launch. During the beta, Strongshift stores your data on this device only and provides wellness guidance, not medical advice."},
@@ -804,7 +820,7 @@ function renderProfile(){
     '<div class="seg">'+[["dark","Dark"],["light","Light"]].map(x=>'<button class="'+((S.prefs.theme||"dark")===x[0]?"on":"")+'" onclick="setPref(\'theme\',\''+x[0]+'\')">'+x[1]+'</button>').join("")+'</div>'+
     '<label class="label">Units</label>'+
     '<div class="seg">'+[["km","Kilometres"],["mi","Miles"]].map(x=>'<button class="'+(S.prefs.units===x[0]?"on":"")+'" onclick="setPref(\'units\',\''+x[0]+'\')">'+x[1]+'</button>').join("")+'</div>'+
-    '<p class="muted" style="font-size:11px;margin-top:6px">Applies to logging and stats. Training paces stay min/km for now.</p>'+
+    '<p class="muted" style="font-size:11px;margin-top:6px">Applies everywhere — sessions, paces, logging and stats.</p>'+
     '<label class="label">Notifications</label>'+
     '<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0"><span style="font-size:14px">Session reminders</span><input type="checkbox" '+(S.prefs.notifSession?"checked":"")+' onchange="setPref(\'notifSession\',this.checked)" style="width:20px;height:20px;accent-color:var(--orange)"></label>'+
     '<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0"><span style="font-size:14px">Weekly summary</span><input type="checkbox" '+(S.prefs.notifWeekly?"checked":"")+' onchange="setPref(\'notifWeekly\',this.checked)" style="width:20px;height:20px;accent-color:var(--orange)"></label>'+
@@ -880,17 +896,38 @@ function gotoTab(v){
 }
 document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>gotoTab(b.dataset.v));
 /* ================= AUTH + ONBOARDING ================= */
-let role=null;
+let role=null,authMode="up";
+function setAuthMode(m){
+  authMode=m;
+  $("a-mode").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===m));
+  $("a-up-name").style.display=m==="up"?"block":"none";
+  $("a-up-role").style.display=m==="up"?"block":"none";
+  $("a-title").textContent=m==="up"?"Create your account":"Welcome back";
+  $("a-sub").textContent=m==="up"
+    ?"Beta: your data is stored on this device only. Cloud accounts arrive with the full launch."
+    :"Enter the email you signed up with to pick up where you left off.";
+  $("a-go").textContent=m==="up"?"Continue":"Sign in";
+}
+$("a-mode").querySelectorAll("button").forEach(b=>b.onclick=()=>setAuthMode(b.dataset.v));
 $("a-role").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   role=b.dataset.v;$("a-role").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
 });
+function enterApp(){
+  if(S.onboarded){renderAll();show("s-app");}
+  else{obStep(1);show("s-onboard");}
+}
 $("a-go").onclick=()=>{
-  const name=$("a-name").value.trim(),email=$("a-email").value.trim();
+  const email=$("a-email").value.trim();
+  if(authMode==="in"){
+    if(!S.profile){alert("No account exists on this device yet — create one to get started.");setAuthMode("up");return;}
+    if(!email||email.toLowerCase()!==S.profile.email.toLowerCase()){alert("That email doesn't match the account on this device.");return;}
+    S.signedOut=false;save();enterApp();return;
+  }
+  const name=$("a-name").value.trim();
   if(!name||!/.+@.+\..+/.test(email)||!role){alert("Fill in your name, a valid email, and pick a role.");return;}
   const pic=S.profile&&S.profile.pic;
   S.profile={name,email,role,pic:pic||null};S.signedOut=false;save();
-  if(S.onboarded){renderAll();show("s-app");}
-  else{obStep(1);show("s-onboard");}
+  enterApp();
 };
 function obStep(n){
   [1,2,3].forEach(i=>{$("ob"+i).style.display=(i===n?"block":"none");$("st"+i).classList.toggle("on",i<=n);});
@@ -946,11 +983,76 @@ $("import-sheet").addEventListener("click",e=>{if(e.target.id==="import-sheet")c
 $("notif-sheet").addEventListener("click",e=>{if(e.target.id==="notif-sheet")closeNotif();});
 $("legal-sheet").addEventListener("click",e=>{if(e.target.id==="legal-sheet")$("legal-sheet").classList.remove("on");});
 /* ================= BOOT ================= */
+/* daily rollover — re-render everything when the calendar date changes,
+   so Today/Roster/Plan/Progress stay current even if the app is left open */
+let lastRenderDay=todayISO();
+function checkDayChange(){
+  if(todayISO()===lastRenderDay)return;
+  lastRenderDay=todayISO();
+  if(S.onboarded&&S.profile&&!S.signedOut)renderAll();
+}
+setInterval(checkDayChange,60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDayChange();});
+window.addEventListener("focus",checkDayChange);
+window.addEventListener("pageshow",checkDayChange);
 applyTheme();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
-if(S.onboarded&&S.profile&&!S.signedOut){renderAll();show("s-app");}
+/* demo mode: ?demo&tab=today|roster|plan|progress|profile — seeded state, never saved */
+const Q=new URLSearchParams(location.search);
+if(Q.has("demo")){
+  save=function(){};
+  const t=todayISO();
+  S=structuredClone(DEF);
+  S.profile={name:"Kal",email:"demo@strongshift.app",role:"Doctor",pic:null};
+  S.onboarded=true;
+  S.rosterStart=t;
+  S.roster=["O","O","O","N","N","N","N","O","O","O","O","O","D","D"];
+  const titles=[["Long run — 12 km steady","key",12,74],["Strength A — lower body","key",0,55],["Tempo — 3×2 km","key",7,42],["Easy run — 30 min","easy",5,30],["Upper strength + core","key",0,60],["Recovery run — 5 km","rec",5,28]];
+  const dl=[];let gap=2;
+  for(let i=1;i<42;i+=gap){
+    const x=titles[i%titles.length];
+    const rec={date:addDays(t,-i),title:x[0],ty:x[1],min:x[3],rpe:5+(i%4),at:Date.now()-i*86400000};
+    if(x[2])rec.km=x[2];
+    dl.push(rec);
+    gap=(i>14?3:2);
+  }
+  S.log=dl;
+  selDay=3;
+  renderAll();show("s-app");
+  gotoTab(["today","roster","plan","progress","profile"].includes(Q.get("tab"))?Q.get("tab"):"today");
+  /* ?demo&shots — capture the five tabs as PNGs for the landing hero */
+  if(Q.has("shots")){
+    const b=document.createElement("button");
+    b.textContent="📸 Capture 5 hero screenshots";
+    b.style.cssText="position:fixed;top:calc(env(safe-area-inset-top) + 70px);left:50%;transform:translateX(-50%);z-index:99;background:var(--orange);color:#0f1115;border:none;border-radius:999px;padding:12px 20px;font-weight:700;font-family:var(--fd);cursor:pointer";
+    b.onclick=async()=>{
+      try{
+        if(typeof html2canvas==="undefined"){
+          b.textContent="Loading capture library…";
+          await new Promise((res,rej)=>{
+            const sc=document.createElement("script");
+            sc.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+            sc.onload=res;sc.onerror=()=>rej(new Error("Couldn't load html2canvas — check your internet connection."));
+            document.head.appendChild(sc);
+          });
+        }
+        b.style.display="none";
+        for(const tab of ["roster","plan","today","progress","profile"]){
+          gotoTab(tab);
+          await new Promise(r=>setTimeout(r,450));
+          const cv=await html2canvas(document.getElementById("s-app"),{backgroundColor:getComputedStyle(document.body).backgroundColor,scale:2,windowWidth:390,width:390,height:780,scrollY:0});
+          const a=document.createElement("a");a.href=cv.toDataURL("image/png");a.download="strongshift-"+tab+".png";a.click();
+          await new Promise(r=>setTimeout(r,450));
+        }
+        b.style.display="block";b.textContent="Done ✓ — check Downloads";
+      }catch(err){b.style.display="block";b.textContent="Capture failed";alert(err.message||err);}
+    };
+    document.body.appendChild(b);
+  }
+}
+else if(S.onboarded&&S.profile&&!S.signedOut){renderAll();show("s-app");}
 else if(S.profile&&!S.signedOut){obStep(1);show("s-onboard");}
-else show("s-auth");
+else{if(S.profile)setAuthMode("in");show("s-auth");}
 </script>
 </body>
 </html>
