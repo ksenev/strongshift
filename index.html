@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Strongshift — Training that adapts to your roster</title>
 <meta name="description" content="Strongshift builds your strength and running program around your shifts. Built by a critical care doctor. Launching Q4 2026.">
-<meta name="theme-color" content="#0a0a0b">
+<meta name="theme-color" content="#1c1e24">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Strongshift">
 <meta property="og:title" content="Strongshift — Training that adapts to your roster">
@@ -21,13 +22,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0a0b;
-  --bg2:#101012;
-  --surface:#151517;
-  --surface2:#1c1c1f;
-  --line:#26262a;
+  --bg:#1c1e24;
+  --bg2:#23252c;
+  --surface:#262932;
+  --surface2:#2e323c;
+  --line:#3a3e49;
   --text:#f4f2ef;
-  --muted:#9b9a97;
+  --muted:#a4a6ad;
   --orange:#ff4d14;
   --orange-soft:#ff7a3d;
   --orange-dim:rgba(255,77,20,.14);
@@ -52,7 +53,7 @@ h2{font-size:clamp(28px,4.5vw,44px);margin-bottom:14px}
 .kicker::before{content:"";width:22px;height:2px;background:var(--orange);border-radius:2px}
 .sub{color:var(--muted);font-size:clamp(16px,2vw,18px);max-width:560px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:16px;padding:14px 28px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
-.btn-primary{background:var(--orange);color:#0a0a0b}
+.btn-primary{background:var(--orange);color:#1c1e24}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,77,20,.45)}
 .btn-ghost{border-color:var(--line);color:var(--text);background:transparent}
 .btn-ghost:hover{border-color:var(--orange);color:var(--orange-soft)}
@@ -65,7 +66,7 @@ h2{font-size:clamp(28px,4.5vw,44px);margin-bottom:14px}
 }
 
 /* ---------- NAV ---------- */
-nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(10,10,11,.72);border-bottom:1px solid rgba(38,38,42,.6)}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(28,30,36,.72);border-bottom:1px solid rgba(38,38,42,.6)}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-.01em}
 .logo em{font-style:normal;color:var(--orange)}
@@ -83,7 +84,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 }
 .burger{display:none;background:none;border:none;cursor:pointer;padding:8px}
 .burger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;border-radius:2px;transition:.3s}
-.mobile-menu{display:none;flex-direction:column;gap:4px;padding:12px 24px 20px;border-top:1px solid var(--line);background:rgba(10,10,11,.97)}
+.mobile-menu{display:none;flex-direction:column;gap:4px;padding:12px 24px 20px;border-top:1px solid var(--line);background:rgba(28,30,36,.97)}
 .mobile-menu a{padding:12px 4px;font-weight:500;color:var(--muted);border-bottom:1px solid rgba(38,38,42,.5)}
 .mobile-menu a:last-child{border:none;color:var(--orange)}
 .mobile-menu.open{display:flex}
@@ -91,7 +92,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 /* ---------- HERO ---------- */
 .hero{position:relative;padding:160px 0 0;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:
-  linear-gradient(to bottom, rgba(10,10,11,0) 0%, rgba(10,10,11,.85) 72%, #0a0a0b 96%),
+  linear-gradient(to bottom, rgba(28,30,36,0) 0%, rgba(28,30,36,.85) 72%, #1c1e24 96%),
   repeating-linear-gradient(0deg, rgba(244,242,239,.05) 0 1px, transparent 1px 44px),
   repeating-linear-gradient(90deg, rgba(244,242,239,.05) 0 1px, transparent 1px 44px)}
 .hero-center{max-width:780px;margin:0 auto;text-align:center;position:relative;z-index:1}
@@ -108,7 +109,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .hero-props svg{flex:none}
 .tag-night{background:#1d1d3a;color:#9f9fff}
 .tag-day{background:rgba(255,122,61,.15);color:var(--orange-soft)}
-.tag-off{background:#1e1e22;color:var(--muted)}
+.tag-off{background:#2e323c;color:var(--muted)}
 
 /* hero app screens — static captures of the real app */
 .hero-screens{display:flex;justify-content:center;align-items:flex-end;margin-top:64px;position:relative;z-index:1}
@@ -171,7 +172,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .pt-key{background:var(--orange-dim);color:var(--orange-soft)}
 .pt-easy{background:rgba(120,200,140,.12);color:#7bcf92}
 .pt-rec{background:#1d1d3a;color:#9f9fff}
-.pt-rest{background:#1e1e22;color:var(--muted)}
+.pt-rest{background:#2e323c;color:var(--muted)}
 .plan-day h4{font-size:13px;line-height:1.25;font-family:var(--font-display)}
 .plan-day p{font-size:11px;color:var(--muted);line-height:1.45}
 .plan-sum{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding:16px 20px;background:var(--bg);border:1px solid var(--line);border-radius:14px;font-size:13.5px;color:var(--muted)}
@@ -250,7 +251,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-w
 .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:760px;margin:52px auto 0}
 .price-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:38px 34px;position:relative;display:flex;flex-direction:column}
 .price-card.pop{border-color:var(--orange);box-shadow:0 0 60px rgba(255,77,20,.15)}
-.pop-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#0a0a0b;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 16px;border-radius:999px;font-family:var(--font-display)}
+.pop-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#1c1e24;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 16px;border-radius:999px;font-family:var(--font-display)}
 .price-card h3{font-size:20px;margin-bottom:6px}
 .price-card .amt{font-family:var(--font-display);font-size:46px;font-weight:700;letter-spacing:-.03em;margin:14px 0 2px}
 .price-card .amt small{font-size:16px;font-weight:500;color:var(--muted);letter-spacing:0}
@@ -297,19 +298,20 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 @keyframes blink{from{opacity:.25}to{opacity:1}}
 @keyframes faqIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 /* hero entrance */
-.hero h1,.hero .sub,.hero-capture,.hero-props,.hs{opacity:0;animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.js .hero h1,.js .hero .sub,.js .hero-capture,.js .hero-props,.js .hs{opacity:0}
+.ready .hero h1,.ready .hero .sub,.ready .hero-capture,.ready .hero-props{animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.ready .hs{animation:riseUp .9s cubic-bezier(.2,.7,.2,1) forwards}
 .hero h1{animation-delay:.05s}
 .hero .sub{animation-delay:.2s}
 .hero-capture{animation-delay:.35s}
 .hero-props{animation-delay:.5s}
-.hs{animation-name:riseUp;animation-duration:.9s}
 .hs3{animation-delay:.65s}
 .hs2,.hs4{animation-delay:.8s}
 .hs1,.hs5{animation-delay:.95s}
 @keyframes riseUp{from{opacity:0;transform:translateY(52px)}to{opacity:1;transform:none}}
 /* nav appears on scroll */
 nav{transition:background-color .35s ease,border-color .35s ease}
-nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
+nav:not(.scrolled){background:rgba(28,30,36,0);border-bottom-color:transparent}
 /* demo */
 .plan-day{animation:planIn .45s cubic-bezier(.2,.7,.2,1) both}
 .day-btn.pop{animation:popIn .3s ease}
@@ -319,7 +321,7 @@ nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
 /* waitlist success */
 .wl-success{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
 @media (prefers-reduced-motion:reduce){
-  .hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens,.hs,.plan-day,.day-btn.pop,.plan-sum.bump,.wl-success,.faq details[open] p{animation:none!important;opacity:1}
+  .hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens,.hs,.plan-day,.day-btn.pop,.plan-sum.bump,.wl-success,.faq details[open] p{animation:none!important;opacity:1!important}
 }
 </style>
 </head>
@@ -355,7 +357,7 @@ nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
   <div class="glow" style="width:720px;height:520px;background:radial-gradient(circle closest-side,rgba(255,77,20,.14),transparent 70%);top:-220px;left:50%;transform:translateX(-50%)"></div>
   <div class="container hero-center">
     <h1>Training that adapts to <span class="accent">your roster.</span></h1>
-    <p class="sub">Generic plans assume you sleep at night and train at 6am. Strongshift builds your strength and running program around your actual shifts — days, evenings, nights, swings — and reshuffles when your roster changes.</p>
+    <p class="sub">Generic plans assume you sleep at night and train at 6am. Strongshift builds your strength and running program around your actual shifts — and reshuffles when your roster changes.</p>
     <div class="hero-capture">
       <form class="wl-form" data-wl>
         <input type="email" name="email" placeholder="you@nightshift.com" required aria-label="Email address">
@@ -373,11 +375,11 @@ nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
     </div>
   </div>
   <div class="hero-screens">
-    <div class="hs hs1"><img src="strongshift-roster.png" alt="Strongshift roster calendar screen" loading="lazy" decoding="async"></div>
-    <div class="hs hs2"><img src="strongshift-plan.png" alt="Strongshift fortnight plan screen" loading="lazy" decoding="async"></div>
-    <div class="hs hs3"><img src="strongshift-today.png" alt="Strongshift today screen with the day's session" decoding="async"></div>
-    <div class="hs hs4"><img src="strongshift-progress.png" alt="Strongshift progress trends screen" loading="lazy" decoding="async"></div>
-    <div class="hs hs5"><img src="strongshift-profile.png" alt="Strongshift profile screen" loading="lazy" decoding="async"></div>
+    <div class="hs hs1"><img src="strongshift-roster.png" alt="Strongshift roster calendar screen" decoding="async"></div>
+    <div class="hs hs2"><img src="strongshift-plan.png" alt="Strongshift fortnight plan screen" decoding="async"></div>
+    <div class="hs hs3"><img src="strongshift-today.png" alt="Strongshift today screen with the day's session" fetchpriority="high"></div>
+    <div class="hs hs4"><img src="strongshift-progress.png" alt="Strongshift progress trends screen" decoding="async"></div>
+    <div class="hs hs5"><img src="strongshift-profile.png" alt="Strongshift profile screen" decoding="async"></div>
   </div>
 </header>
 
@@ -566,6 +568,12 @@ menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classL
 document.querySelectorAll('.feat-grid,.price-grid,.faq .container').forEach(g=>{
   g.querySelectorAll('.reveal').forEach((el,i)=>el.dataset.rd=i*90);
 });
+/* start hero animations once assets are in (fallback after 1.2s) */
+const heroReady=()=>document.documentElement.classList.add("ready");
+if(document.readyState==="complete")heroReady();
+else window.addEventListener("load",heroReady);
+setTimeout(heroReady,1200);
+
 const io=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;
   const el=e.target,d=+(el.dataset.rd||0);
