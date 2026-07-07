@@ -319,6 +319,36 @@ input,select{font-family:var(--fb)}
   </div>
 </div>
 
+<div class="overlay" id="feedback-sheet">
+  <div class="sheet">
+    <h3 style="font-size:18px">Send feedback</h3>
+    <p class="muted" style="font-size:12.5px">Opens your email app, addressed straight to Dr Kal. Expect a reply within a couple of days.</p>
+    <label class="label">Type</label>
+    <div class="seg" id="fb-type"><button data-v="bug" class="on">Bug</button><button data-v="idea">Idea</button><button data-v="question">Question</button></div>
+    <label class="label">Message</label>
+    <textarea class="input" id="fb-msg" rows="4" placeholder="What's on your mind?" style="resize:vertical;min-height:90px;font-family:inherit"></textarea>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-ghost" onclick="closeFeedback()">Cancel</button>
+      <button class="btn" onclick="sendFeedback()">Send</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="evidence-sheet">
+  <div class="sheet">
+    <h3 style="font-size:18px">The science behind your plan</h3>
+    <div class="muted" style="font-size:13px;margin-top:10px;line-height:1.55">
+      <p><b style="color:var(--text)">Progressive overload.</b> Loads and volumes step up in small increments (~2.5–5 kg or 1 rep at a time) — the dose-response shown in ACSM strength-training guidance.</p>
+      <p style="margin-top:10px"><b style="color:var(--text)">48-hour muscle recovery.</b> The engine never programs the same muscle groups on consecutive days — each strength session names what it trains, and the next one rotates.</p>
+      <p style="margin-top:10px"><b style="color:var(--text)">Hard days, easy days.</b> No two hard sessions back to back. Endurance work stays mostly easy with a few key sessions — the polarised 80/20 model used by elite programs.</p>
+      <p style="margin-top:10px"><b style="color:var(--text)">Periodisation.</b> Base → Build → Peak blocks with a deload roughly every 4th week, and long-run volume capped to gradual weekly increases.</p>
+      <p style="margin-top:10px"><b style="color:var(--text)">Shift-work adjusted.</b> Nights-heavy weeks are automatically downgraded to recovery weeks, and sessions land when you're day-adapted — sleep is treated as part of the program, consistent with circadian and shift-worker research.</p>
+      <p style="margin-top:10px"><b style="color:var(--text)">Auto-regulation.</b> Your logged effort (RPE) and completion rate over the last 14 days tune the plan: cruising steps difficulty up, struggling holds it down.</p>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:16px" onclick="document.getElementById('evidence-sheet').classList.remove('on')">Close</button>
+  </div>
+</div>
+
 <canvas id="share-canvas" width="1080" height="1920" style="display:none"></canvas>
 
 <script>
@@ -413,16 +443,64 @@ function weekPhase(w){return WKMETA&&WKMETA[w]?WKMETA[w].phase:PHASES[w%4];}
 const SHIFT={D:{n:"Day",t:"t-day"},L:{n:"Late",t:"t-late"},N:{n:"Night",t:"t-night"},O:{n:"Off",t:"t-off"}};
 const CYCLE={O:"D",D:"L",L:"N",N:"O"};
 function distLabel(d){return d===21.1?"half marathon":d===42.2?"marathon":distStr(d);}
+/* each strength session names its muscle groups (mg) so the engine never programs the same muscles two days running (~48 h recovery per group) */
 const FOCUS={
-  general:{hint:"Balanced strength — squat, hinge, press, pull.",A:"Strength A — lower body",B:"Strength B — upper + core",
-    pool:[["Heavy lower — squat 5×5","Leave 1–2 reps in reserve"],["Upper strength + core","Press + pull supersets"]]},
-  power:{hint:"Squat, bench, deadlift. Heavy triples and fives.",A:"Squat — 5×3 heavy",B:"Bench — 5×3 + back accessories",
-    pool:[["Squat — 5×3 heavy","Top set at RPE 8"],["Bench — 5×3 + row 4×8","Pause the first rep"],["Deadlift — 4×3 heavy","Crisp reps, no grinders"]]},
-  hyper:{hint:"Muscle building — 8–12 rep hypertrophy work.",A:"Lower hypertrophy — 4×10",B:"Push hypertrophy — 4×10",
-    pool:[["Lower hypertrophy — 4×8–12","Quads, glutes, hamstrings"],["Push hypertrophy — 4×8–12","Chest, shoulders, triceps"],["Pull hypertrophy — 4×8–12","Back and biceps volume"]]},
-  cond:{hint:"Engine work — circuits, intervals, carries.",A:"Conditioning — 30 min intervals",B:"Full-body circuit — EMOM 24",
-    pool:[["HIIT — 10×(40s on/80s off)","Bike, rower or hills"],["Full-body circuit — EMOM 24","Squat, push, pull, carry"],["Sled + carries — 25 min","Heavy, uglier is better"]]}
+  general:{hint:"Balanced strength — squat, hinge, press, pull.",
+    pool:[
+      {t:"Lower strength — squat focus",d:"Squat 5×5 + RDL 3×8 · quads, glutes, hamstrings",mg:"lower"},
+      {t:"Upper strength — push + pull",d:"Bench 4×6 + row 4×8 supersets · chest, back, shoulders",mg:"upper"},
+      {t:"Full-body — hinge + carry",d:"Deadlift 3×5, press 3×8, loaded carries · posterior chain, core",mg:"full"}
+    ]},
+  power:{hint:"Squat, bench, deadlift. Heavy triples and fives.",
+    pool:[
+      {t:"Squat day — 5×3 heavy",d:"Top set RPE 8, back-off 3×5 · quads, glutes",mg:"lower"},
+      {t:"Bench day — 5×3 heavy",d:"Pause the first rep + row 4×8 · chest, upper back",mg:"upper"},
+      {t:"Deadlift day — 4×3 heavy",d:"Crisp reps, no grinders + hamstring accessories · posterior chain",mg:"hinge"}
+    ]},
+  hyper:{hint:"Muscle building — 8–12 rep hypertrophy work.",
+    pool:[
+      {t:"Lower hypertrophy — 4×8–12",d:"Squat, split squat, leg curl · quads, glutes, hamstrings",mg:"lower"},
+      {t:"Push hypertrophy — 4×8–12",d:"Incline press, dips, lateral raises · chest, shoulders, triceps",mg:"push"},
+      {t:"Pull hypertrophy — 4×8–12",d:"Rows, pulldowns, curls · back, rear delts, biceps",mg:"pull"}
+    ]},
+  cond:{hint:"Engine work — circuits, intervals, carries.",
+    pool:[
+      {t:"HIIT — 10×(40s on/80s off)",d:"Bike, rower or hills · anaerobic power",mg:"hiit"},
+      {t:"Full-body circuit — EMOM 24",d:"Squat, push, pull, carry · muscular endurance",mg:"circuit"},
+      {t:"Sled + carries — 25 min",d:"Heavy, uglier is better · grip, trunk, legs",mg:"strongman"}
+    ]}
 };
+/* which muscles each session type actually loads — used for the no-repeat rule */
+const MG={lower:["legs"],hinge:["legs","back"],upper:["push","pull"],push:["push"],pull:["pull"],full:["legs","push","pull"],hiit:[],circuit:[],strongman:[]};
+function mgClash(a,b){return !!(a&&b&&MG[a].some(x=>MG[b].includes(x)));}
+function pickLift(prevMg,liftN){
+  const pool=FOCUS[S.goals.focus||"general"].pool;
+  for(let j=0;j<pool.length;j++){
+    const x=pool[(liftN+j)%pool.length];
+    if(!mgClash(x.mg,prevMg))return x;
+  }
+  return pool.find(x=>x.mg!==prevMg)||pool[liftN%pool.length];
+}
+/* adaptive difficulty: reads the last 14 days of the log — completion vs plan and average RPE.
+   Cruising (RPE ≤6.5, ≥80% done) → progress one step. Struggling (RPE ≥8.5 or <40% done) → hold. */
+function trainingAdj(){
+  const t=todayISO();
+  const recent=S.log.filter(l=>l.date>=addDays(t,-13)&&l.date<=t);
+  const rpes=recent.filter(l=>l.rpe).map(l=>l.rpe);
+  const avg=rpes.length?rpes.reduce((a,b)=>a+b,0)/rpes.length:null;
+  const target=S.goals.cap*2;
+  if((avg!==null&&avg>=8.5)||(S.log.length&&recent.length<target*.4))return -1;
+  if(avg!==null&&avg<=6.5&&recent.length>=target*.8)return 1;
+  return 0;
+}
+/* progressive-overload cue for strength sessions, phase- and adaptation-aware */
+function liftCue(wk){
+  const ph=weekPhase(wk),adj=trainingAdj();
+  if(ph==="Deload"||ph==="Recover")return "Deload — 60% of usual loads, stop fresh";
+  if(adj<0)return "Hold last week's loads — recovery first";
+  const base={Base:"RPE 7, leave 2 reps in reserve",Build:"Add 2.5–5 kg or 1 rep vs last week",Peak:"Top sets RPE 8–9, full rest between sets"}[ph]||"RPE 7";
+  return adj>0?base+" · you're ready to push":base;
+}
 function fmtClock(sec){
   sec=Math.round(sec);
   const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
@@ -445,30 +523,29 @@ function longKm(w){
   if(ph==="Deload"||ph==="Recover")k=Math.max(6,Math.round(k*.7));
   return k;
 }
-function loaded(w){const ph=weekPhase(w);return ph==="Build"||ph==="Peak";}
 function runPool(wk){
-  const p=paces();
+  const p=paces(),ph=weekPhase(wk),easyWk=(ph==="Deload"||ph==="Recover");
+  const g=WKMETA&&WKMETA[wk]?WKMETA[wk].growth:wk,adj=trainingAdj();
+  /* rep volume progresses with training age and adapts to logged effort */
+  const iv=easyWk?4:Math.max(5,Math.min(10,6+Math.floor(g/3)+adj));
+  const tp=easyWk?2:Math.max(2,Math.min(4,3+Math.floor(g/4)+adj));
   return[
     {t:"Long run — "+distStr(longKm(wk))+" steady",d:"Hold "+p.easy+" · build the engine",tm:"09:00",ty:"key",km:longKm(wk)},
-    {t:"Tempo — 3×"+distStr(2),d:"At "+p.tempo+" · 2 min float",tm:"09:30",ty:"key",km:7},
-    {t:"Intervals — 6×800 m",d:"At "+p.intv+" · 400 m jog recovery",tm:"09:30",ty:"key",km:5}
+    {t:"Tempo — "+tp+"×"+distStr(2),d:"At "+p.tempo+" · 2 min float between reps",tm:"09:30",ty:"key",km:tp*2+3},
+    {t:"Intervals — "+iv+"×800 m",d:"At "+p.intv+" · 400 m jog recovery",tm:"09:30",ty:"key",km:Math.round(iv*.8+2)}
   ];
-}
-function pools(wk){
-  const{run,lift,focus}=S.goals,P=[];
-  const lp=lift?FOCUS[focus].pool.map(x=>({t:x[0]+(loaded(wk)&&focus!=="cond"?" · add load":""),d:x[1],tm:"10:00",ty:"key"})):[];
-  const rp=run?runPool(wk):[];
-  const n=Math.max(rp.length,lp.length);
-  for(let i=0;i<n;i++){if(rp[i])P.push(rp[i]);if(lp[i])P.push(lp[i]);}
-  if(!P.length)P.push({t:"Full-body strength","d":"45 min compound circuit",tm:"10:00",ty:"key"},{t:"Easy run — 30 min",d:"Conversational pace",tm:"09:30",ty:"easy",km:5});
-  return P;
 }
 function buildPlan(){
   rollRoster();
   WKMETA=weekMeta();
   const weeks=Math.ceil(HORIZON/7);
   const plan=[],poolN=Array(weeks).fill(0),keyN=Array(weeks).fill(0);
-  const F=FOCUS[S.goals.focus||"general"];
+  const lift=S.goals.lift,run=S.goals.run;
+  let liftN=0,runN=0,prevMg=null,prevKey=false;
+  const liftSes=(wk,tm,extra)=>{
+    const x=pickLift(prevMg,liftN);liftN++;
+    return{t:x.t,d:x.d+" · "+liftCue(wk)+(extra?" · "+extra:""),tm,ty:"key",mg:x.mg};
+  };
   for(let i=0;i<HORIZON;i++){
     const s=S.roster[i],wk=Math.floor(i/7),prev=i>0?S.roster[i-1]:"O";
     const ph=weekPhase(wk);
@@ -477,20 +554,28 @@ function buildPlan(){
     const p=paces();
     let ses;
     if(s==="N"){
-      if(prev!=="N"&&!cap()){keyN[wk]++;ses={t:S.goals.lift?F.A:"Easy run — 40 min",d:"Train while day-adapted, then nap before the shift",tm:beforeShift("N",210)+" · before shift",ty:S.goals.lift?"key":"easy",km:S.goals.lift?undefined:7};}
+      if(prev!=="N"&&!cap()&&!prevKey){keyN[wk]++;ses=lift?liftSes(wk,beforeShift("N",210)+" · before shift","train day-adapted, then nap before the shift"):{t:"Easy run — 40 min",d:"Zone 2 while day-adapted, then nap before the shift",tm:beforeShift("N",210)+" · before shift",ty:"easy",km:7};}
       else ses={t:"Protect sleep",d:"20 min mobility at most. Sleep is the session.",tm:"",ty:"rest"};
     }else if(s==="D"){
       if(prev==="N")ses={t:"Rest — recover from nights",d:"Sleep debt day. Walk if anything.",tm:"",ty:"rest"};
-      else if(prev==="D"&&!cap()){keyN[wk]++;ses=S.goals.lift?{t:F.B,d:"Express session, in and out",tm:afterShift("D",45)+" · after shift",ty:"key"}:{t:"Tempo — 20 min",d:p?("At "+p.tempo):"",tm:afterShift("D",45)+" · after shift",ty:"key",km:5};}
+      else if(prev==="D"&&!cap()&&!prevKey){keyN[wk]++;ses=lift?liftSes(wk,afterShift("D",45)+" · after shift","express session, in and out"):{t:"Tempo — 20 min",d:p?("At "+p.tempo):"",tm:afterShift("D",45)+" · after shift",ty:"key",km:5};}
       else ses={t:"Easy run — 30 min",d:p?("Zone 2, "+p.easy+" or slower"):"Zone 2, conversational",tm:afterShift("D",60)+" · after shift",ty:"easy",km:5};
     }else if(s==="L"){
-      if(!cap()){keyN[wk]++;ses=S.goals.lift?{t:F.B,d:"Morning session, full recovery before the late",tm:beforeShift("L",270)+" · before shift",ty:"key"}:{t:"Intervals — 6×800 m",d:p?("At "+p.intv):"",tm:beforeShift("L",270)+" · before shift",ty:"key",km:5};}
+      if(!cap()&&!prevKey){keyN[wk]++;ses=lift?liftSes(wk,beforeShift("L",270)+" · before shift","morning session, full recovery before the late"):{t:"Intervals — 6×800 m",d:p?("At "+p.intv):"",tm:beforeShift("L",270)+" · before shift",ty:"key",km:5};}
       else ses={t:"Easy run — 30 min",d:"Before your shift",tm:beforeShift("L",270)+" · before shift",ty:"easy",km:5};
     }else{
       if(prev==="N")ses={t:"Recovery run — "+distStr(5),d:"After anchor sleep. Daylight resets the clock.",tm:afterShift("N",540),ty:"rec",km:5};
-      else if(!cap()){const pl=pools(wk);const x=pl[poolN[wk]%pl.length];poolN[wk]++;if(x.ty==="key")keyN[wk]++;ses=Object.assign({},x);}
+      else if(!cap()&&prevKey){ses=run?{t:"Easy run — 30 min",d:"Hard day yesterday — conversational pace only",tm:"09:30",ty:"easy",km:5}:{t:"Mobility + walk — 30 min",d:"Hard day yesterday — move, don't train",tm:"10:00",ty:"rec"};}
+      else if(!cap()){
+        keyN[wk]++;
+        const wantRun=run&&(!lift||poolN[wk]%2===0);poolN[wk]++;
+        if(wantRun){const rp=runPool(wk);ses=Object.assign({},rp[runN%rp.length]);runN++;}
+        else if(lift)ses=liftSes(wk,"10:00");
+        else ses={t:"Full-body strength",d:"45 min compound circuit · "+liftCue(wk),tm:"10:00",ty:"key"};
+      }
       else ses={t:"Full rest",d:"Adaptation happens here, not the gym.",tm:"",ty:"rest"};
     }
+    prevMg=ses.mg||null;prevKey=ses.ty==="key";
     plan.push(Object.assign({shift:s,date:addDays(S.rosterStart,i)},ses));
   }
   return plan;
@@ -843,8 +928,13 @@ function renderPlan(){
         '<div class="inner">'+rows.map(p=>sessionRow(p,true)).join("")+'</div></details>';
     }
   }
+  const adj=trainingAdj();
+  const adaptNote=adj>0?'<p style="font-size:12px;margin-top:6px;color:var(--green)">▲ Adapting up — recent sessions felt comfortable, so this block steps up.</p>'
+    :adj<0?'<p style="font-size:12px;margin-top:6px;color:var(--orange-soft)">▼ Easing off — recent effort was high, so loads hold while you recover.</p>':'';
   $("v-plan").innerHTML='<h2 style="font-size:22px;margin-bottom:4px">Your next 3 months</h2><p class="muted" style="font-size:13px">'+
     (S.goals.run?('Paces for your '+distLabel(S.goals.dist)+' goal ('+fmtClock(S.goals.targetSec)+'): easy '+paces().easy+' · tempo '+paces().tempo+' · intervals '+paces().intv):'Strength-focused block — '+FOCUS[S.goals.focus].hint)+'</p>'+
+    adaptNote+
+    '<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="document.getElementById(\'evidence-sheet\').classList.add(\'on\')">🧬 The science behind your plan</button>'+
     phaseBar+body;
 }
 /* ---- trends ---- */
@@ -1041,9 +1131,10 @@ function renderProfile(){
     '<div class="conn"><div class="ci">🏃</div><div><b>Garmin Connect</b><small>Sync runs and recovery</small></div><span class="soon">CLOUD BETA</span></div>'+
     '<div class="conn"><div class="ci">🔗</div><div><b>Strava</b><small>Auto-import activities</small></div><span class="soon">CLOUD BETA</span></div>'+
     '<p class="muted" style="font-size:11.5px;margin-top:10px">Integrations need cloud accounts — they ship with the full launch. Until then, use "Log a watch workout" in Progress.</p></div>'+
-    '<p class="week-head">Data</p><div class="card">'+
-    '<button class="btn btn-ghost" onclick="exportData()">Export my data (JSON)</button>'+
-    (S.photo?'<button class="btn btn-ghost" style="margin-top:10px" onclick="S.photo=null;save();renderAll()">Remove roster photo</button>':"")+
+    (S.photo?'<p class="week-head">Data</p><div class="card"><button class="btn btn-ghost" onclick="S.photo=null;save();renderAll()">Remove roster photo</button></div>':"")+
+    '<p class="week-head">Feedback</p><div class="card">'+
+    '<p class="muted" style="font-size:12.5px">Found a bug, got an idea, or want a session explained? It goes straight to Dr Kal — every message gets a reply.</p>'+
+    '<button class="btn btn-ghost" style="margin-top:12px" onclick="openFeedback()">💬 Send feedback</button>'+
     '</div>'+
     '<p class="week-head">Account</p><div class="card">'+
     '<button class="btn btn-ghost" onclick="signOut()">Sign out</button>'+
@@ -1075,9 +1166,17 @@ function setTarget(v){
   if(sec){S.goals.targetSec=sec;save();}
   renderAll();
 }
-function exportData(){
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="strongshift-data.json";a.click();
+/* ---- feedback ---- */
+let fbType="bug";
+function openFeedback(){$("fb-msg").value="";$("feedback-sheet").classList.add("on");}
+function closeFeedback(){$("feedback-sheet").classList.remove("on");}
+function sendFeedback(){
+  const msg=$("fb-msg").value.trim();
+  if(!msg){$("fb-msg").focus();return;}
+  const subj="Strongshift beta "+fbType+(S.profile&&S.profile.name?" — from "+S.profile.name:"");
+  const body=msg+"\n\n—\nGoals: "+(S.goals.run?distLabel(S.goals.dist)+" run":"")+(S.goals.run&&S.goals.lift?" + ":"")+(S.goals.lift?S.goals.focus+" strength":"")+" · "+S.log.length+" sessions logged";
+  location.href="mailto:hello@strongshift.app?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
+  closeFeedback();
 }
 function bigPhoto(){$("photo-big").src=S.photo;$("photo-overlay").classList.add("on");}
 $("photo-overlay").onclick=()=>$("photo-overlay").classList.remove("on");
@@ -1203,6 +1302,9 @@ $("ls-rpe").oninput=e=>$("ls-rpe-out").textContent=e.target.value;
 $("im-type").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   imType=b.dataset.v;$("im-type").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
   $("im-km-wrap").style.display=imType==="run"?"block":"none";
+});
+$("fb-type").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  fbType=b.dataset.v;$("fb-type").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
 });
 $("log-sheet").addEventListener("click",e=>{if(e.target.id==="log-sheet"){pendingLog=null;$("log-sheet").classList.remove("on");}});
 $("import-sheet").addEventListener("click",e=>{if(e.target.id==="import-sheet")closeImport();});
