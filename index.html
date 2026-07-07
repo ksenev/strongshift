@@ -297,12 +297,16 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 @keyframes blink{from{opacity:.25}to{opacity:1}}
 @keyframes faqIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 /* hero entrance */
-.hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens{opacity:0;animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
-.hero h1{animation-delay:.1s}
-.hero .sub{animation-delay:.22s}
-.hero-capture{animation-delay:.34s}
-.hero-props{animation-delay:.46s}
-.hero-screens{animation-duration:.9s;animation-delay:.4s}
+.hero h1,.hero .sub,.hero-capture,.hero-props,.hs{opacity:0;animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.hero h1{animation-delay:.05s}
+.hero .sub{animation-delay:.2s}
+.hero-capture{animation-delay:.35s}
+.hero-props{animation-delay:.5s}
+.hs{animation-name:riseUp;animation-duration:.9s}
+.hs3{animation-delay:.65s}
+.hs2,.hs4{animation-delay:.8s}
+.hs1,.hs5{animation-delay:.95s}
+@keyframes riseUp{from{opacity:0;transform:translateY(52px)}to{opacity:1;transform:none}}
 /* nav appears on scroll */
 nav{transition:background-color .35s ease,border-color .35s ease}
 nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
@@ -315,7 +319,7 @@ nav:not(.scrolled){background:rgba(10,10,11,0);border-bottom-color:transparent}
 /* waitlist success */
 .wl-success{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
 @media (prefers-reduced-motion:reduce){
-  .hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens,.plan-day,.day-btn.pop,.plan-sum.bump,.wl-success,.faq details[open] p{animation:none!important;opacity:1}
+  .hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens,.hs,.plan-day,.day-btn.pop,.plan-sum.bump,.wl-success,.faq details[open] p{animation:none!important;opacity:1}
 }
 </style>
 </head>
