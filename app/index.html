@@ -175,7 +175,7 @@ input,select{font-family:var(--fb)}
           <div class="seg" id="g-dist">
             <button data-v="5">5 km</button><button data-v="10" class="on">10 km</button><button data-v="21.1">Half</button><button data-v="42.2">Marathon</button>
           </div>
-          <label class="label">Target time (mm:ss or h:mm:ss)</label>
+          <label class="label">Target time — type the digits, e.g. 5000 for 50:00</label>
           <input class="input" id="g-time" placeholder="50:00" inputmode="numeric">
         </div>
       </div>
@@ -1052,11 +1052,27 @@ function renderProfile(){
     '<p style="text-align:center;margin-top:18px;font-size:12.5px"><a href="#" onclick="openLegal(\'terms\');return false" style="color:var(--muted)">Terms &amp; Conditions</a><span class="muted"> · </span><a href="#" onclick="openLegal(\'privacy\');return false" style="color:var(--muted)">Privacy Policy</a></p>'+
     '<p class="muted" style="font-size:11.5px;margin-top:10px;text-align:center">Strongshift beta · local-only data · not medical advice<br>hello@strongshift.app</p>';
 }
-function setTarget(v){
+/* accepts 50:00, 1:30:00 — or bare digits from the mobile keypad: 5000 → 50:00, 13000 → 1:30:00 */
+function parseClock(v){
+  v=(v||"").trim();
   let m=v.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
-  if(m){S.goals.targetSec=(+m[1])*3600+(+m[2])*60+(+m[3]);save();renderAll();return;}
+  if(m&&+m[2]<60&&+m[3]<60)return(+m[1])*3600+(+m[2])*60+(+m[3]);
   m=v.match(/^(\d{1,3}):(\d{2})$/);
-  if(m){S.goals.targetSec=(+m[1])*60+(+m[2]);save();}
+  if(m&&+m[2]<60)return(+m[1])*60+(+m[2]);
+  if(/^\d{3,6}$/.test(v)){
+    const ss=+v.slice(-2);
+    if(ss<60){
+      const rest=v.slice(0,-2);
+      if(rest.length<=2)return(+rest)*60+ss;
+      const mm=+rest.slice(-2);
+      if(mm<60)return(+rest.slice(0,-2))*3600+mm*60+ss;
+    }
+  }
+  return null;
+}
+function setTarget(v){
+  const sec=parseClock(v);
+  if(sec){S.goals.targetSec=sec;save();}
   renderAll();
 }
 function exportData(){
@@ -1169,14 +1185,13 @@ $("ob1-go").onclick=()=>{
   const defT={5:1320,10:3000,21.1:6600,42.2:13500};
   let targetSec=defT[dist];
   const v=$("g-time").value.trim();
-  let m=v.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
-  if(m)targetSec=(+m[1])*3600+(+m[2])*60+(+m[3]);
-  else{m=v.match(/^(\d{1,3}):(\d{2})$/);
-    if(m)targetSec=(+m[1])*60+(+m[2]);
-    else if(run&&v){alert("Time format is mm:ss or h:mm:ss, e.g. 50:00 or 1:50:00");return;}}
+  const sec=parseClock(v);
+  if(sec)targetSec=sec;
+  else if(run&&v){alert("Enter a time like 50:00 or 1:50:00 — or just the digits, e.g. 5000 for 50:00.");return;}
   S.goals={run,dist,targetSec,lift,focus,cap:+$("g-cap").value};save();
   obStep(2);
 };
+$("g-time").addEventListener("change",()=>{const s=parseClock($("g-time").value);if(s)$("g-time").value=fmtClock(s);});
 $("r-photo").onchange=photoPick;
 $("r-photo-img").onclick=bigPhoto;
 $("ob2-back").onclick=()=>obStep(1);
