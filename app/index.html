@@ -147,12 +147,6 @@ input,select{font-family:var(--fb)}
       </div>
       <label class="label" for="a-email">Email</label>
       <input class="input" id="a-email" type="email" placeholder="you@nightshift.com" autocomplete="email">
-      <div id="a-up-role">
-        <label class="label">What do you do?</label>
-        <div class="seg" id="a-role">
-          <button data-v="Nurse">Nurse</button><button data-v="Doctor">Doctor</button><button data-v="Paramedic">Paramedic</button><button data-v="Other">Other</button>
-        </div>
-      </div>
       <button class="btn" id="a-go" style="margin-top:22px">Continue</button>
     </div>
   </div>
@@ -161,7 +155,7 @@ input,select{font-family:var(--fb)}
 <div id="s-onboard" class="screen">
   <div class="wrap" style="padding-top:calc(env(safe-area-inset-top) + 26px)">
     <span class="kicker">Setup</span>
-    <div class="steps"><span id="st1"></span><span id="st2"></span><span id="st3"></span></div>
+    <div class="steps"><span id="st1"></span><span id="st2"></span><span id="st3"></span><span id="st4"></span></div>
 
     <div id="ob1" style="display:none" class="fade">
       <h2 style="font-size:22px;margin:14px 0 4px">What are you training for?</h2>
@@ -196,6 +190,36 @@ input,select{font-family:var(--fb)}
       <div class="btn-row">
         <button class="btn btn-ghost" id="ob1-back">← Back</button>
         <button class="btn" id="ob1-go">Next</button>
+      </div>
+    </div>
+
+    <div id="ob1b" style="display:none" class="fade">
+      <h2 style="font-size:22px;margin:14px 0 4px">Your starting point</h2>
+      <p class="muted" style="font-size:13.5px">Everyone starts somewhere different. This sets where your plan begins — not where it ends.</p>
+      <div class="card" style="margin-top:16px" id="ob-base-run">
+        <b style="font-family:var(--fd)">Running right now</b>
+        <label class="label">Longest comfortable run</label>
+        <div class="seg" id="b-long">
+          <button data-v="3" style="min-width:0">3 km</button><button data-v="6" class="on" style="min-width:0">6 km</button><button data-v="10" style="min-width:0">10 km</button><button data-v="15" style="min-width:0">15+</button>
+        </div>
+        <label class="label">Recent 5K time — optional</label>
+        <input class="input" id="b-5k" placeholder="28:30" inputmode="numeric">
+        <p class="muted" style="font-size:11.5px;margin-top:6px">Any recent hard effort works — sets your training paces. Leave blank to pace off your goal.</p>
+      </div>
+      <div class="card" style="margin-top:12px" id="ob-base-lift">
+        <b style="font-family:var(--fd)">Lifting experience</b>
+        <div class="seg" id="b-lift" style="margin-top:10px">
+          <button data-v="new">New</button><button data-v="ret" class="on">Returning</button><button data-v="exp">Experienced</button>
+        </div>
+        <p class="muted" id="b-lift-hint" style="font-size:11.5px;margin-top:8px">Trained before, coming back — moderate loads, faster ramp than a beginner.</p>
+      </div>
+      <div class="card" style="margin-top:12px;border-color:rgba(123,207,146,.35);background:var(--green-dim,rgba(123,207,146,.08))">
+        <p class="kicker" style="font-size:10.5px;color:var(--green)">Your plan will start at</p>
+        <p id="b-preview" style="font-size:13px;margin-top:6px;line-height:1.55"></p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="ob1b-back">← Back</button>
+        <button class="btn" id="ob1b-go">Next</button>
       </div>
     </div>
 
@@ -267,12 +291,35 @@ input,select{font-family:var(--fb)}
     <input class="input" id="ls-km" inputmode="decimal" placeholder="10.0"></div>
     <label class="label">Duration (minutes)</label>
     <input class="input" id="ls-min" inputmode="numeric" placeholder="60">
-    <label class="label">Effort (RPE): <b id="ls-rpe-out" style="color:var(--text)">7</b>/10</label>
+    <label class="label">Effort (RPE): <b id="ls-rpe-out" style="color:var(--text)">7/10 · hard</b></label>
     <input type="range" id="ls-rpe" min="1" max="10" step="1" value="7" style="width:100%;accent-color:var(--orange)">
     <div class="btn-row" style="margin-top:18px">
       <button class="btn btn-ghost" onclick="saveLog(true)">Skip details</button>
       <button class="btn" onclick="saveLog(false)">Save session</button>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="edit-sheet">
+  <div class="sheet">
+    <h3 style="font-size:18px" id="es-title">Edit session</h3>
+    <p class="muted" style="font-size:12.5px" id="es-sub"></p>
+    <label class="label">Type</label>
+    <div class="seg" id="es-type">
+      <button data-v="key">Key</button><button data-v="easy">Easy</button><button data-v="rec">Recovery</button><button data-v="lift">Lift</button>
+    </div>
+    <label class="label" id="es-km-label">Distance (km) — leave blank if none</label>
+    <input class="input" id="es-km" inputmode="decimal" placeholder="10.0">
+    <label class="label">Duration (minutes)</label>
+    <input class="input" id="es-min" inputmode="numeric" placeholder="60">
+    <label class="label">Effort (RPE): <b id="es-rpe-out" style="color:var(--text)">7/10 · hard</b></label>
+    <input type="range" id="es-rpe" min="1" max="10" step="1" value="7" style="width:100%;accent-color:var(--orange)">
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>
+      <button class="btn" onclick="saveEdit()">Save changes</button>
+    </div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:10px;border-color:var(--danger-line);color:var(--danger)" onclick="deleteEdit()">Delete session</button>
+    <p class="muted" style="font-size:11.5px;margin-top:10px;text-align:center">Fitness score, streaks and medals update automatically.</p>
   </div>
 </div>
 
@@ -322,14 +369,15 @@ input,select{font-family:var(--fb)}
 <div class="overlay" id="feedback-sheet">
   <div class="sheet">
     <h3 style="font-size:18px">Send feedback</h3>
-    <p class="muted" style="font-size:12.5px">Opens your email app, addressed straight to Dr Kal. Expect a reply within a couple of days.</p>
+    <p class="muted" style="font-size:12.5px">Goes straight to Dr Kal — replies land in your email within a couple of days.</p>
     <label class="label">Type</label>
     <div class="seg" id="fb-type"><button data-v="bug" class="on">Bug</button><button data-v="idea">Idea</button><button data-v="question">Question</button></div>
     <label class="label">Message</label>
     <textarea class="input" id="fb-msg" rows="4" placeholder="What's on your mind?" style="resize:vertical;min-height:90px;font-family:inherit"></textarea>
+    <p id="fb-status" style="display:none;font-size:12.5px;margin-top:10px"></p>
     <div class="btn-row" style="margin-top:18px">
       <button class="btn btn-ghost" onclick="closeFeedback()">Cancel</button>
-      <button class="btn" onclick="sendFeedback()">Send</button>
+      <button class="btn" id="fb-send" onclick="sendFeedback()">Send</button>
     </div>
   </div>
 </div>
@@ -358,7 +406,9 @@ const KEY="strongshift_v1";
 const DEFG={run:true,dist:10,targetSec:3000,lift:true,focus:"general",cap:5};
 const DEFST={D:{s:"07:00",e:"19:00"},L:{s:"14:00",e:"22:30"},N:{s:"19:00",e:"07:00"}};
 const DEFPREFS={units:"km",notifSession:true,notifWeekly:true,lang:"en",theme:"dark"};
-const DEF={profile:null,goals:DEFG,rosterStart:null,roster:[],photo:null,log:[],onboarded:false,shiftTimes:DEFST,prefs:DEFPREFS,signedOut:false,notifSeen:"",medals:{}};
+/* starting point — null/"exp" preserve the pre-existing goal-derived behaviour for accounts created before this feature */
+const DEFBASE={longRun:null,fiveKSec:null,lift:"exp"};
+const DEF={profile:null,goals:DEFG,base:DEFBASE,rosterStart:null,roster:[],photo:null,log:[],onboarded:false,shiftTimes:DEFST,prefs:DEFPREFS,signedOut:false,notifSeen:"",medals:{}};
 let S=load();
 function load(){
   try{
@@ -366,6 +416,8 @@ function load(){
     if(!s)return structuredClone(DEF);
     const m=Object.assign({},DEF,s);
     m.goals=Object.assign({},DEFG,s.goals||{});
+    m.base=Object.assign({},DEFBASE,s.base||{});
+    (m.log||[]).forEach((l,i)=>{if(!l.at)l.at=i+1;}); /* history editing needs a stable id */
     m.shiftTimes=JSON.parse(JSON.stringify(Object.assign({},DEFST,s.shiftTimes||{})));
     m.prefs=Object.assign({},DEFPREFS,s.prefs||{});
     m.medals=Object.assign({},s.medals||{});
@@ -388,8 +440,10 @@ function timeAdd(hm,min){
 function beforeShift(code,lead){const t=timeAdd(S.shiftTimes[code].s,-lead);return t<"06:00"?"06:00":t;}
 function afterShift(code,gap){return timeAdd(S.shiftTimes[code].e,gap);}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert("Storage full — remove the roster photo in Profile to free space.");}}
-function todayISO(){const d=new Date();return d.toISOString().slice(0,10);}
-function addDays(iso,n){const d=new Date(iso+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+/* local-time ISO date — toISOString() is UTC and lags Brisbane by 10h, which kept "today" on yesterday until 10am */
+function isoLocal(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function todayISO(){return isoLocal(new Date());}
+function addDays(iso,n){const d=new Date(iso+"T12:00:00");d.setDate(d.getDate()+n);return isoLocal(d);}
 function fmtDay(iso){return new Date(iso+"T12:00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric"});}
 const HORIZON=91; /* 13 weeks */
 function rollRoster(){
@@ -493,6 +547,9 @@ function trainingAdj(){
   if(avg!==null&&avg<=6.5&&recent.length>=target*.8)return 1;
   return 0;
 }
+/* lifting experience shades every strength prescription — "exp" keeps the written schemes as-is */
+const LIFTLVL={new:"new lifter: go light, 3×8–10, technique first",ret:"returning: moderate loads, build back over 2–3 weeks",exp:""};
+const LIFTHINT={new:"New to lifting — light loads and simple movements while technique settles.",ret:"Trained before, coming back — moderate loads, faster ramp than a beginner.",exp:"Currently lifting — full prescriptions from day one."};
 /* progressive-overload cue for strength sessions, phase- and adaptation-aware */
 function liftCue(wk){
   const ph=weekPhase(wk),adj=trainingAdj();
@@ -508,19 +565,26 @@ function fmtClock(sec){
 }
 function paces(){
   if(!S.goals.run)return null;
-  const dist=S.goals.dist,g=S.goals.targetSec/dist;
+  const dist=S.goals.dist;
+  let g=S.goals.targetSec/dist;
+  /* if we know current 5K fitness, train at the slower of goal pace and current pace (Riegel projection) */
+  if(S.base&&S.base.fiveKSec){
+    const cur=S.base.fiveKSec*Math.pow(dist/5,1.06)/dist;
+    if(cur>g)g=cur;
+  }
   const adj={5:{t:12,i:-4,e:70},10:{t:-4,i:-14,e:70},"21.1":{t:-15,i:-25,e:45},"42.2":{t:-25,i:-40,e:40}}[String(dist)];
   const f=s=>{if(S.prefs.units==="mi")s=s/MI;s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+"/"+unitLbl();};
   return{goal:f(g),easy:f(g+adj.e),tempo:f(g+adj.t),intv:f(g+adj.i)};
 }
 function longKm(w){
   const d=String(S.goals.dist);
-  const base={5:10,10:12,"21.1":14,"42.2":18}[d];
+  const gd={5:10,10:12,"21.1":14,"42.2":18}[d];
   const cap={5:14,10:18,"21.1":24,"42.2":32}[d];
+  const base=Math.min(cap,(S.base&&S.base.longRun)||gd);
   const g=WKMETA&&WKMETA[w]?WKMETA[w].growth:Math.max(0,w-Math.floor(w/4));
   let k=Math.min(cap,base+g);
   const ph=weekPhase(w);
-  if(ph==="Deload"||ph==="Recover")k=Math.max(6,Math.round(k*.7));
+  if(ph==="Deload"||ph==="Recover")k=Math.max(Math.min(6,base),Math.round(k*.7));
   return k;
 }
 function runPool(wk){
@@ -542,9 +606,10 @@ function buildPlan(){
   const plan=[],poolN=Array(weeks).fill(0),keyN=Array(weeks).fill(0);
   const lift=S.goals.lift,run=S.goals.run;
   let liftN=0,runN=0,prevMg=null,prevKey=false;
+  const lvlNote=LIFTLVL[(S.base&&S.base.lift)||"exp"];
   const liftSes=(wk,tm,extra)=>{
     const x=pickLift(prevMg,liftN);liftN++;
-    return{t:x.t,d:x.d+" · "+liftCue(wk)+(extra?" · "+extra:""),tm,ty:"key",mg:x.mg};
+    return{t:x.t,d:x.d+(lvlNote?" · "+lvlNote:"")+" · "+liftCue(wk)+(extra?" · "+extra:""),tm,ty:"key",mg:x.mg};
   };
   for(let i=0;i<HORIZON;i++){
     const s=S.roster[i],wk=Math.floor(i/7),prev=i>0?S.roster[i-1]:"O";
@@ -592,7 +657,7 @@ function completeSession(date,title,ty,isRun){
   document.getElementById("ls-km-wrap").style.display=isRun?"block":"none";
   document.getElementById("ls-km-label").textContent="Distance ("+unitLbl()+")";
   document.getElementById("ls-km").value="";document.getElementById("ls-min").value="";
-  document.getElementById("ls-rpe").value=7;document.getElementById("ls-rpe-out").textContent=7;
+  document.getElementById("ls-rpe").value=7;document.getElementById("ls-rpe-out").textContent=rpeOut(7);
   document.getElementById("log-sheet").classList.add("on");
 }
 function saveLog(skip){
@@ -619,6 +684,41 @@ function saveImport(){
   const rec={date:todayISO(),title:names[imType],ty:imType==="run"?"easy":"key",extra:true,at:Date.now()};
   if(km>0)rec.km=Math.round(toKm(km)*100)/100;if(min>0)rec.min=min;
   S.log.push(rec);save();checkMedals(false);closeImport();renderAll();
+}
+/* RPE readout — descriptor updates live as the slider moves */
+function rpeLbl(v){v=+v;return v<=3?"easy":v<=6?"moderate":v<=8?"hard":"all out";}
+function rpeOut(v){return v+"/10 · "+rpeLbl(v);}
+/* ---- edit a logged session from History ---- */
+let editIdx=-1,editTy=null;
+function openEdit(at){
+  editIdx=S.log.findIndex(l=>l.at===at);
+  if(editIdx<0)return;
+  const l=S.log[editIdx];editTy=(l.ty==="key"||l.ty==="easy"||l.ty==="rec"||l.ty==="lift")?l.ty:"easy";
+  $("es-title").textContent=l.title;
+  $("es-sub").textContent=fmtDay(l.date)+(l.extra?" · logged workout":" · planned session");
+  $("es-type").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===editTy));
+  $("es-km-label").textContent="Distance ("+unitLbl()+") — leave blank if none";
+  $("es-km").value=l.km?unitDist(l.km):"";
+  $("es-min").value=l.min||"";
+  $("es-rpe").value=l.rpe||7;$("es-rpe-out").textContent=rpeOut(l.rpe||7);
+  $("edit-sheet").classList.add("on");
+}
+function closeEdit(){editIdx=-1;$("edit-sheet").classList.remove("on");}
+function saveEdit(){
+  if(editIdx<0)return;
+  const l=S.log[editIdx];
+  const km=parseFloat($("es-km").value),min=parseFloat($("es-min").value);
+  l.ty=editTy;
+  if(km>0)l.km=Math.round(toKm(km)*100)/100;else delete l.km;
+  if(min>0)l.min=min;else delete l.min;
+  l.rpe=+$("es-rpe").value;
+  closeEdit();save();checkMedals(true);renderAll();
+}
+function deleteEdit(){
+  if(editIdx<0)return;
+  if(!confirm("Delete this session from your history?"))return;
+  S.log.splice(editIdx,1);
+  closeEdit();save();checkMedals(true);renderAll();
 }
 function streak(){
   if(!S.log.length)return 0;
@@ -664,8 +764,12 @@ function medalStatus(){
 }
 function checkMedals(silent){
   const st=medalStatus(),fresh=[];
-  MEDALS.forEach(m=>{if(st[m.id]&&!S.medals[m.id]){S.medals[m.id]=todayISO();fresh.push(m.id);}});
-  if(fresh.length){save();if(!silent)celebrate(fresh);}
+  let revoked=false;
+  MEDALS.forEach(m=>{
+    if(st[m.id]&&!S.medals[m.id]){S.medals[m.id]=todayISO();fresh.push(m.id);}
+    else if(!st[m.id]&&S.medals[m.id]){delete S.medals[m.id];revoked=true;} /* history edits can take a medal back */
+  });
+  if(fresh.length||revoked){save();if(fresh.length&&!silent)celebrate(fresh);}
 }
 let medalQ=[];
 function celebrate(ids){medalQ.push(...ids);nextMedal(true);}
@@ -1056,9 +1160,9 @@ function renderProgress(){
       }).join("")+
     '</div>'+
     '<p class="week-head">History</p>'+
-    (hist.length?hist.map(l=>'<div class="srow"><span class="dd">'+fmtDay(l.date).toUpperCase()+'</span><div class="body"><h4>'+l.title+'</h4>'+
+    (hist.length?hist.map(l=>'<div class="srow" style="cursor:pointer" onclick="openEdit('+l.at+')"><span class="dd">'+fmtDay(l.date).toUpperCase()+'</span><div class="body"><h4>'+l.title+'</h4>'+
       '<p>'+[l.km?unitDist(l.km)+" "+unitLbl():null,l.min?l.min+" min":null,l.rpe?"RPE "+l.rpe:null].filter(Boolean).join(" · ")+'</p>'+
-      '<p style="margin-top:4px">'+pill(l.ty)+'</p></div></div>').join("")
+      '<p style="margin-top:4px">'+pill(l.ty)+'</p></div><span class="muted" style="align-self:center;font-size:13px" aria-hidden="true">✎</span></div>').join("")
       :'<div class="card"><p class="muted" style="font-size:13.5px">Nothing logged yet. Your first session is one tap away on the Today tab.</p></div>');
 }
 function applyTheme(){
@@ -1067,6 +1171,13 @@ function applyTheme(){
   if(m)m.content=S.prefs.theme==="light"?"#f4f5f7":"#1c1e24";
 }
 function setPref(k,v){S.prefs[k]=v;save();if(k==="theme")applyTheme();renderAll();}
+function setBase5k(v){
+  v=(v||"").trim();
+  if(!v){S.base.fiveKSec=null;save();renderAll();return;}
+  const s=parseClock(v);
+  if(s){S.base.fiveKSec=s;save();renderAll();}
+  else{alert("Enter a time like 28:30 — or just the digits, e.g. 2830.");renderAll();}
+}
 function setShiftTime(c,k,v){if(v){S.shiftTimes[c][k]=v;save();renderAll();}}
 function picPick(e){
   const f=e.target.files[0];if(!f)return;
@@ -1094,7 +1205,7 @@ function renderProfile(){
     (pic?'<img src="'+pic+'" alt="Profile photo" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);flex:0 0 auto">'
       :'<div style="width:56px;height:56px;border-radius:50%;background:var(--orange-dim);color:var(--orange-soft);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:22px;flex:0 0 auto">'+((S.profile&&S.profile.name?S.profile.name[0]:"?").toUpperCase())+'</div>')+
     '<div style="flex:1;min-width:0"><b style="font-family:var(--fd);font-size:16px">'+(S.profile?S.profile.name:"")+'</b>'+
-    '<p class="muted" style="font-size:12.5px;overflow:hidden;text-overflow:ellipsis">'+(S.profile?S.profile.role+" · "+S.profile.email:"")+'</p></div></div>'+
+    '<p class="muted" style="font-size:12.5px;overflow:hidden;text-overflow:ellipsis">'+(S.profile?((S.profile.role?S.profile.role+" · ":"")+S.profile.email):"")+'</p></div></div>'+
     '<div style="display:flex;gap:8px;margin-top:12px"><label class="btn btn-ghost btn-sm">'+(pic?"Change photo":"Add profile photo")+'<input type="file" accept="image/*" style="display:none" onchange="picPick(event)"></label>'+
     (pic?'<button class="btn btn-ghost btn-sm" onclick="S.profile.pic=null;save();renderAll()">Remove</button>':"")+'</div></div>'+
     '<p class="week-head">Goals</p><div class="card">'+
@@ -1107,6 +1218,16 @@ function renderProfile(){
     '<label class="label">Max sessions/week: <b style="color:var(--text)">'+g.cap+'</b></label>'+
     '<input type="range" min="3" max="6" step="1" value="'+g.cap+'" style="width:100%;accent-color:var(--orange)" oninput="S.goals.cap=+this.value;save();renderAll()">'+
     '</div>'+
+    ((g.run||g.lift)?('<p class="week-head">Starting point</p><div class="card">'+
+    '<p class="muted" style="font-size:12.5px">Where the engine starts your plan — change any time and the plan rebuilds.</p>'+
+    (g.run?('<label class="label">Longest comfortable run</label><div class="seg">'+[[3,"3 km"],[6,"6 km"],[10,"10 km"],[15,"15+"]].map(x=>'<button style="min-width:0" class="'+(S.base.longRun===x[0]?"on":"")+'" onclick="S.base.longRun='+x[0]+';save();renderAll()">'+x[1]+'</button>').join("")+'</div>'+
+    (S.base.longRun?"":'<p class="muted" style="font-size:11px;margin-top:6px">Not set — long runs start from your goal\'s standard base.</p>')+
+    '<label class="label">Recent 5K time — optional</label>'+
+    '<input class="input" value="'+(S.base.fiveKSec?fmtClock(S.base.fiveKSec):"")+'" placeholder="28:30" onchange="setBase5k(this.value)" inputmode="numeric">'+
+    '<p class="muted" style="font-size:11px;margin-top:6px">Sets training paces from current fitness. Clear it to pace off your goal time.</p>'):"")+
+    (g.lift?('<label class="label">Lifting experience</label><div class="seg">'+[["new","New"],["ret","Returning"],["exp","Experienced"]].map(x=>'<button class="'+((S.base.lift||"exp")===x[0]?"on":"")+'" onclick="S.base.lift=\''+x[0]+'\';save();renderAll()">'+x[1]+'</button>').join("")+'</div>'+
+    '<p class="muted" style="font-size:11px;margin-top:8px">'+LIFTHINT[S.base.lift||"exp"]+'</p>'):"")+
+    '</div>'):"")+
     '<p class="week-head">Shift times</p><div class="card">'+
     '<p class="muted" style="font-size:12.5px">Set your shift hours — the roster and plan use these.</p>'+
     SHIFTROWS.map(r=>'<div style="display:flex;align-items:center;gap:10px;margin-top:12px">'+
@@ -1168,15 +1289,31 @@ function setTarget(v){
 }
 /* ---- feedback ---- */
 let fbType="bug";
-function openFeedback(){$("fb-msg").value="";$("feedback-sheet").classList.add("on");}
+function openFeedback(){$("fb-msg").value="";$("fb-status").style.display="none";$("feedback-sheet").classList.add("on");}
 function closeFeedback(){$("feedback-sheet").classList.remove("on");}
+/* delivered via Formspree (same inbox as the waitlist, forwards to hello@strongshift.app) — swap for a dedicated form ID any time */
+const FB_ENDPOINT="https://formspree.io/f/xlgyzjwp";
 function sendFeedback(){
   const msg=$("fb-msg").value.trim();
   if(!msg){$("fb-msg").focus();return;}
-  const subj="Strongshift beta "+fbType+(S.profile&&S.profile.name?" — from "+S.profile.name:"");
-  const body=msg+"\n\n—\nGoals: "+(S.goals.run?distLabel(S.goals.dist)+" run":"")+(S.goals.run&&S.goals.lift?" + ":"")+(S.goals.lift?S.goals.focus+" strength":"")+" · "+S.log.length+" sessions logged";
-  location.href="mailto:hello@strongshift.app?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
-  closeFeedback();
+  const btn=$("fb-send"),st=$("fb-status");
+  btn.disabled=true;btn.textContent="Sending…";st.style.display="none";
+  const context="Goals: "+(S.goals.run?distLabel(S.goals.dist)+" run":"")+(S.goals.run&&S.goals.lift?" + ":"")+(S.goals.lift?S.goals.focus+" strength":"")+" · "+S.log.length+" sessions logged";
+  fetch(FB_ENDPOINT,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify({
+    _subject:"Strongshift beta "+fbType+(S.profile&&S.profile.name?" — from "+S.profile.name:""),
+    email:S.profile?S.profile.email:"",
+    name:S.profile?S.profile.name:"",
+    type:fbType,message:msg,context
+  })}).then(r=>{
+    if(!r.ok)throw new Error();
+    btn.textContent="Send";btn.disabled=false;
+    st.style.color="var(--green)";st.textContent="✓ Sent — Dr Kal will reply to "+(S.profile?S.profile.email:"your email")+".";st.style.display="block";
+    $("fb-msg").value="";
+    setTimeout(closeFeedback,1600);
+  }).catch(()=>{
+    btn.textContent="Send";btn.disabled=false;
+    st.style.color="var(--danger)";st.textContent="Couldn't send — check your connection and try again.";st.style.display="block";
+  });
 }
 function bigPhoto(){$("photo-big").src=S.photo;$("photo-overlay").classList.add("on");}
 $("photo-overlay").onclick=()=>$("photo-overlay").classList.remove("on");
@@ -1222,12 +1359,11 @@ function gotoTab(v){
 }
 document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>gotoTab(b.dataset.v));
 /* ================= AUTH + ONBOARDING ================= */
-let role=null,authMode="up";
+let authMode="up";
 function setAuthMode(m){
   authMode=m;
   $("a-mode").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===m));
   $("a-up-name").style.display=m==="up"?"block":"none";
-  $("a-up-role").style.display=m==="up"?"block":"none";
   $("a-title").textContent=m==="up"?"Create your account":"Welcome back";
   $("a-sub").textContent=m==="up"
     ?"Beta: your data is stored on this device only. Cloud accounts arrive with the full launch."
@@ -1235,9 +1371,6 @@ function setAuthMode(m){
   $("a-go").textContent=m==="up"?"Continue":"Sign in";
 }
 $("a-mode").querySelectorAll("button").forEach(b=>b.onclick=()=>setAuthMode(b.dataset.v));
-$("a-role").querySelectorAll("button").forEach(b=>b.onclick=()=>{
-  role=b.dataset.v;$("a-role").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
-});
 function enterApp(){
   if(S.onboarded){renderAll();show("s-app");}
   else{obStep(1);show("s-onboard");}
@@ -1250,21 +1383,60 @@ $("a-go").onclick=()=>{
     S.signedOut=false;save();enterApp();return;
   }
   const name=$("a-name").value.trim();
-  if(!name||!/.+@.+\..+/.test(email)||!role){alert("Fill in your name, a valid email, and pick a role.");return;}
+  if(!name||!/.+@.+\..+/.test(email)){alert("Fill in your name and a valid email.");return;}
   const pic=S.profile&&S.profile.pic;
-  S.profile={name,email,role,pic:pic||null};S.signedOut=false;save();
+  S.profile={name,email,role:(S.profile&&S.profile.role)||null,pic:pic||null};S.signedOut=false;save();
   enterApp();
 };
+const OBS=["ob1","ob1b","ob2","ob3"];
 function obStep(n){
-  [1,2,3].forEach(i=>{$("ob"+i).style.display=(i===n?"block":"none");$("st"+i).classList.toggle("on",i<=n);});
-  if(n===2)rosterGrid("ob-roster",true,14);
-  if(n===3){
+  OBS.forEach((id,i)=>{$(id).style.display=(i===n-1?"block":"none");$("st"+(i+1)).classList.toggle("on",i<n);});
+  if(n===2){
+    $("ob-base-run").style.display=S.goals.run?"block":"none";
+    $("ob-base-lift").style.display=S.goals.lift?"block":"none";
+    updateBasePreview();
+  }
+  if(n===3)rosterGrid("ob-roster",true,14);
+  if(n===4){
     const plan=buildPlan();
     $("ob3-sum").textContent=plan.slice(0,14).filter(p=>p.ty==="key").length+" key sessions placed around your shifts this fortnight — and a 13-week periodised block behind them.";
     $("ob3-preview").innerHTML=plan.slice(0,4).map(p=>sessionRow(p,false)).join("");
   }
   window.scrollTo(0,0);
 }
+/* starting-point step */
+let bLong=6,bLift="ret";
+const LIFTPREV={new:"light loads, 3×8–10, technique first",ret:"moderate loads, rebuilding over 2–3 weeks",exp:"full prescriptions from day one"};
+function updateBasePreview(){
+  const g=S.goals,parts=[];
+  if(g.run){
+    const d=String(g.dist),cap={5:14,10:18,"21.1":24,"42.2":32}[d];
+    const start=Math.min(cap,bLong);
+    let per=g.targetSec/g.dist;
+    const fk=parseClock($("b-5k").value.trim());
+    if(fk){const cur=fk*Math.pow(g.dist/5,1.06)/g.dist;if(cur>per)per=cur;}
+    const adjE={5:70,10:70,"21.1":45,"42.2":40}[d];
+    const f=s=>{if(S.prefs.units==="mi")s=s/MI;s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+"/"+unitLbl();};
+    parts.push("Long runs from <b style=\"font-family:var(--fd)\">"+distStr(start)+"</b>, building toward your "+distLabel(g.dist)+" · easy pace <b style=\"font-family:var(--fd)\">"+f(per+adjE)+"</b>");
+  }
+  if(g.lift)parts.push("lifts at <b style=\"font-family:var(--fd)\">"+LIFTPREV[bLift]+"</b>");
+  $("b-preview").innerHTML=parts.join(" · ")||"Pick a goal on the previous step first.";
+}
+$("b-long").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  bLong=+b.dataset.v;$("b-long").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));updateBasePreview();
+});
+$("b-lift").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  bLift=b.dataset.v;$("b-lift").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  $("b-lift-hint").textContent=LIFTHINT[bLift];updateBasePreview();
+});
+$("b-5k").addEventListener("change",()=>{const s=parseClock($("b-5k").value.trim());if(s)$("b-5k").value=fmtClock(s);updateBasePreview();});
+$("ob1b-back").onclick=()=>obStep(1);
+$("ob1b-go").onclick=()=>{
+  const v=$("b-5k").value.trim(),sec=parseClock(v);
+  if(v&&!sec){alert("Enter a time like 28:30 — or just the digits, e.g. 2830.");return;}
+  S.base={longRun:bLong,fiveKSec:sec||null,lift:bLift};save();
+  obStep(3);
+};
 let dist=10;
 $("g-dist").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   dist=+b.dataset.v;$("g-dist").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
@@ -1293,12 +1465,12 @@ $("ob1-go").onclick=()=>{
 $("g-time").addEventListener("change",()=>{const s=parseClock($("g-time").value);if(s)$("g-time").value=fmtClock(s);});
 $("r-photo").onchange=photoPick;
 $("r-photo-img").onclick=bigPhoto;
-$("ob2-back").onclick=()=>obStep(1);
-$("ob2-go").onclick=()=>{save();obStep(3);};
-$("ob3-back").onclick=()=>obStep(2);
+$("ob2-back").onclick=()=>obStep(2);
+$("ob2-go").onclick=()=>{save();obStep(4);};
+$("ob3-back").onclick=()=>obStep(3);
 $("ob3-go").onclick=()=>{S.onboarded=true;save();renderAll();show("s-app");};
 /* sheets */
-$("ls-rpe").oninput=e=>$("ls-rpe-out").textContent=e.target.value;
+$("ls-rpe").oninput=e=>$("ls-rpe-out").textContent=rpeOut(e.target.value);
 $("im-type").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   imType=b.dataset.v;$("im-type").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
   $("im-km-wrap").style.display=imType==="run"?"block":"none";
@@ -1307,6 +1479,11 @@ $("fb-type").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   fbType=b.dataset.v;$("fb-type").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
 });
 $("log-sheet").addEventListener("click",e=>{if(e.target.id==="log-sheet"){pendingLog=null;$("log-sheet").classList.remove("on");}});
+$("edit-sheet").addEventListener("click",e=>{if(e.target.id==="edit-sheet")closeEdit();});
+$("es-rpe").oninput=e=>$("es-rpe-out").textContent=rpeOut(e.target.value);
+$("es-type").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  editTy=b.dataset.v;$("es-type").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+});
 $("import-sheet").addEventListener("click",e=>{if(e.target.id==="import-sheet")closeImport();});
 $("notif-sheet").addEventListener("click",e=>{if(e.target.id==="notif-sheet")closeNotif();});
 $("medal-sheet").addEventListener("click",e=>{if(e.target.id==="medal-sheet"){medalQ=[];$("medal-sheet").classList.remove("on");}});
