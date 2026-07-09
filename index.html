@@ -170,6 +170,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
 .presets{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
 .chip{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:500;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.2s;font-family:var(--font-body)}
 .chip:hover{border-color:var(--orange);color:var(--orange-soft)}
+.chip.sm{padding:6px 12px;font-size:12.5px}
+.chip.on{border-color:var(--orange);background:var(--orange-dim);color:var(--orange-soft)}
+.sp-box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:22px}
+.sp-kicker{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--orange-soft);display:block;margin-bottom:10px}
+.sp-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sp-row+.sp-row{margin-top:8px}
+.sp-lbl{font-size:12.5px;color:var(--muted);flex:0 0 88px}
 .plan-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .plan-day{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 10px;min-height:150px;display:flex;flex-direction:column;gap:8px}
 .plan-day .pd{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--muted)}
@@ -220,6 +227,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
   /* demo */
   .demo-box{padding:18px 14px;border-radius:18px;margin-top:32px}
   .demo-steps{font-size:13px;margin-bottom:16px}
+  .sp-box{padding:12px}
+  .sp-lbl{flex:0 0 100%}
   .presets{gap:8px;margin-bottom:22px}
   .chip{padding:7px 13px;font-size:12.5px}
   .week{gap:5px}
@@ -463,9 +472,23 @@ nav:not(.scrolled){background:rgba(28,30,36,0);border-bottom-color:transparent}
         <button class="chip" data-preset="clear">Clear</button>
       </div>
       <div class="week" id="week" aria-label="Select your shifts for the week"></div>
+      <div class="sp-box" id="spBox">
+        <span class="sp-kicker">NEW · YOUR STARTING POINT</span>
+        <div class="sp-row"><span class="sp-lbl">Longest run</span>
+          <button class="chip sm" data-long="3">3 km</button>
+          <button class="chip sm on" data-long="6">6 km</button>
+          <button class="chip sm" data-long="10">10 km</button>
+          <button class="chip sm" data-long="15">15+</button>
+        </div>
+        <div class="sp-row"><span class="sp-lbl">Lifting</span>
+          <button class="chip sm" data-lift="new">New</button>
+          <button class="chip sm on" data-lift="ret">Returning</button>
+          <button class="chip sm" data-lift="exp">Experienced</button>
+        </div>
+      </div>
       <div class="plan-grid" id="plan"></div>
       <div class="plan-sum" id="planSum"></div>
-      <p class="plan-note"><b>This is a taste.</b> The full app reads your real roster, factors in sleep and fatigue, builds your training plan around your goals — strength, running, or both — progresses your lifts and paces week to week, and rebuilds instantly when shifts change.</p>
+      <p class="plan-note"><b>This is a taste.</b> The full app reads your real roster, factors in sleep and fatigue, builds your plan around your goals — strength, running, or both — starts it from your current fitness, not someone else's, progresses your lifts and paces week to week, and rebuilds instantly when shifts change.</p>
     </div>
   </div>
 </section>
@@ -620,17 +643,29 @@ weekEl.addEventListener('click',e=>{
   states[i]=STATES[(STATES.indexOf(states[i])+1)%STATES.length];
   renderWeek(i);generatePlan();
 });
-document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+document.querySelectorAll('.presets .chip').forEach(c=>c.addEventListener('click',()=>{
   states=[...PRESETS[c.dataset.preset]];
   renderWeek();generatePlan();
 }));
+// starting-point chips — the demo plan responds to fitness level, mirroring the app engine
+let spLong=6,spLift='ret';
+document.querySelectorAll('#spBox .chip').forEach(c=>c.addEventListener('click',()=>{
+  if(c.dataset.long){spLong=+c.dataset.long;document.querySelectorAll('[data-long]').forEach(x=>x.classList.toggle('on',x===c));}
+  else{spLift=c.dataset.lift;document.querySelectorAll('[data-lift]').forEach(x=>x.classList.toggle('on',x===c));}
+  trackDemoOnce();generatePlan();
+}));
 
 function generatePlan(){
+  const LV={
+    new:{t1:'Full-Body Strength',d1:'Light loads, 3×8–10, technique first · 45 min · key session',t2:'Full-Body Strength B',d2:'Simple movements, light loads · 40 min · key session'},
+    ret:{t1:'Lower Strength',d1:'Moderate loads — rebuild over 2–3 weeks · 50 min · key session',t2:'Upper Strength',d2:'Press + pull, moderate loads, no ego sets · 50 min · key session'},
+    exp:{t1:'Heavy Lower',d1:'Squat focus · 60 min · key session',t2:'Heavy Upper',d2:'Press + pull · 55 min · key session'}
+  }[spLift];
   const KEYS=[
-    {t:'Heavy Lower',d:'Squat focus · 60 min · key session'},
+    {t:LV.t1,d:LV.d1},
+    {t:'Long Easy Run — '+spLong+' km',d:'Starts where you are · builds ~10% a week toward your goal'},
     {t:'Tempo Run',d:'45 min · comfortably hard · key session'},
-    {t:'Heavy Upper',d:'Press + pull · 55 min · key session'},
-    {t:'Long Easy Run',d:'70 min · conversational pace'}
+    {t:LV.t2,d:LV.d2}
   ];
   let k=0,alt=0;
   const plan=states.map((s,i)=>{
