@@ -655,6 +655,33 @@ document.querySelectorAll('#spBox .chip').forEach(c=>c.addEventListener('click',
   trackDemoOnce();generatePlan();
 }));
 
+// small combinatorics helpers for the demo scheduler below
+function combinations(arr,k){
+  if(k===0)return[[]];
+  if(arr.length<k)return[];
+  const [head,...tail]=arr;
+  const withHead=combinations(tail,k-1).map(c=>[head,...c]);
+  const withoutHead=combinations(tail,k);
+  return withHead.concat(withoutHead);
+}
+function permutations(arr){
+  if(arr.length<=1)return[arr];
+  const out=[];
+  arr.forEach((v,i)=>{
+    const rest=arr.slice(0,i).concat(arr.slice(i+1));
+    permutations(rest).forEach(p=>out.push([v,...p]));
+  });
+  return out;
+}
+// adjacent-day conflict cost between two session groups — legs/running compound fatigue,
+// back-to-back running is also suboptimal, upper-body work doesn't meaningfully clash
+function groupConflict(g1,g2){
+  if(g1==='legs'&&g2==='legs')return 3;
+  if((g1==='legs'&&g2==='run')||(g1==='run'&&g2==='legs'))return 3;
+  if(g1==='run'&&g2==='run')return 2;
+  return 0;
+}
+
 function generatePlan(){
   const LV={
     new:{t1:'Full-Body Strength',d1:'Light loads, 3×8–10, technique first · 45 min · key session',t2:'Full-Body Strength B',d2:'Simple movements, light loads · 40 min · key session'},
@@ -662,35 +689,81 @@ function generatePlan(){
     exp:{t1:'Heavy Lower',d1:'Squat focus · 60 min · key session',t2:'Heavy Upper',d2:'Press + pull · 55 min · key session'}
   }[spLift];
   const KEYS=[
-    {t:LV.t1,d:LV.d1},
-    {t:'Long Easy Run — '+spLong+' km',d:'Starts where you are · builds ~10% a week toward your goal'},
-    {t:'Tempo Run',d:'45 min · comfortably hard · key session'},
-    {t:LV.t2,d:LV.d2}
+    {id:'lower',group:'legs',t:LV.t1,d:LV.d1},
+    {id:'long',group:'run',t:'Long Easy Run — '+spLong+' km',d:'Starts where you are · builds ~10% a week toward your goal'},
+    {id:'tempo',group:'run',t:'Tempo Run',d:'45 min · comfortably hard · key session'},
+    {id:'upper',group:'upper',t:LV.t2,d:LV.d2}
   ];
-  let k=0,alt=0;
-  const plan=states.map((s,i)=>{
+
+  // pass 1 — lock in the shift-adjacency sessions exactly as before (pre-night primer,
+  // protect sleep between nights, post-night recovery/micro-dose)
+  const dayCount=states.length;
+  const forced=new Array(dayCount).fill(null);
+  states.forEach((s,i)=>{
     const prev=i>0?states[i-1]:null;
     if(s==='night'){
-      return prev==='night'
-        ?{type:'rec',tag:'Recovery',t:'Protect Sleep',d:'20 min mobility between sleeps. Nothing heavy — sleep is the session.'}
-        :{type:'rec',tag:'Primer',t:'Pre-Night Primer',d:'25 min full-body strength, finished by early afternoon. Then rest before the shift.'};
+      forced[i]=prev==='night'
+        ?{type:'rec',tag:'Recovery',t:'Protect Sleep',d:'20 min mobility between sleeps. Nothing heavy — sleep is the session.',group:'none'}
+        :{type:'rec',tag:'Primer',t:'Pre-Night Primer',d:'25 min full-body strength, finished by early afternoon. Then rest before the shift.',group:'none'};
+    } else if(prev==='night'){
+      forced[i]=s==='off'
+        ?{type:'rec',tag:'Reset',t:'Night Recovery',d:'Sleep in. Then 30 min zone-2 run in daylight to reset your body clock.',group:'run'}
+        :{type:'easy',tag:'Easy',t:'Micro Dose',d:s==='day'?'20 min easy spin or brisk walk. You\'re carrying sleep debt — don\'t fight it.':'20 min easy movement. Coming off nights — keep it gentle before your evening shift.',group:'none'};
     }
-    if(s==='day'){
-      if(prev==='night')return{type:'easy',tag:'Easy',t:'Micro Dose',d:'20 min easy spin or brisk walk. You\'re carrying sleep debt — don\'t fight it.'};
-      return (alt++%2===0)
-        ?{type:'easy',tag:'Easy',t:'Express Strength',d:'35 min full-body lift, before or after shift. In, out, done.'}
-        :{type:'easy',tag:'Easy',t:'Easy Run',d:'30 min zone 2. Low stress, keeps the engine ticking.'};
-    }
-    if(s==='evening'){
-      if(prev==='night')return{type:'easy',tag:'Easy',t:'Micro Dose',d:'20 min easy movement. Coming off nights — keep it gentle before your evening shift.'};
-      return (alt++%2===0)
-        ?{type:'easy',tag:'Easy',t:'AM Strength',d:'45 min lift in the morning — your best window before an evening shift.'}
-        :{type:'easy',tag:'Easy',t:'AM Run',d:'40 min zone 2 in the morning. Done by lunch, fresh for the shift.'};
-    }
-    // off
-    if(prev==='night')return{type:'rec',tag:'Reset',t:'Night Recovery',d:'Sleep in. Then 30 min zone-2 run in daylight to reset your body clock.'};
-    if(k<KEYS.length){const ks=KEYS[k++];return{type:'key',tag:'Key',t:ks.t,d:ks.d};}
-    return{type:'rest',tag:'Rest',t:'Full Rest',d:'Genuine day off. Adaptation happens here, not in the gym.'};
+  });
+
+  // pass 2 — spread key sessions across the available off days instead of stacking them
+  // front-to-back, then pick whichever key session TYPES land on adjacent off days so a
+  // heavy leg day never sits next to the long run (or another leg/run session)
+  const offSlots=[];
+  states.forEach((s,i)=>{ if(s==='off'&&!forced[i])offSlots.push(i); });
+  const nKey=Math.min(KEYS.length,offSlots.length);
+  let keySlots=offSlots;
+  if(offSlots.length>nKey){
+    const step=offSlots.length/nKey,picked=new Set();
+    for(let i=0;i<nKey;i++)picked.add(offSlots[Math.min(offSlots.length-1,Math.floor(i*step+step/2))]);
+    let ptr=0;
+    while(picked.size<nKey&&ptr<offSlots.length){picked.add(offSlots[ptr]);ptr++;}
+    keySlots=[...picked].sort((a,b)=>a-b);
+  }
+  let bestCombo=null,bestScore=Infinity;
+  combinations(KEYS,nKey).forEach(combo=>{
+    permutations(combo).forEach(perm=>{
+      let score=0;
+      for(let i=0;i<keySlots.length;i++)
+        for(let j=i+1;j<keySlots.length;j++)
+          if(Math.abs(keySlots[i]-keySlots[j])===1)score+=groupConflict(perm[i].group,perm[j].group);
+      score=score*100-(combo.some(k=>k.id==='long')?2:0)-new Set(combo.map(k=>k.group)).size;
+      if(score<bestScore){bestScore=score;bestCombo=perm;}
+    });
+  });
+  const keyAssignment={};
+  keySlots.forEach((slot,i)=>keyAssignment[slot]=bestCombo[i]);
+
+  // pass 3 — fill remaining off days as rest, and day/evening shifts as easy strength or
+  // easy running, favouring whichever complements the previous day's session
+  const groupOf=new Array(dayCount).fill(null);
+  states.forEach((s,i)=>{
+    if(forced[i])groupOf[i]=forced[i].group;
+    else if(keyAssignment[i])groupOf[i]=keyAssignment[i].group;
+    else if(s==='off')groupOf[i]='rest';
+  });
+  let alt=0;
+  const plan=states.map((s,i)=>{
+    if(forced[i])return forced[i];
+    if(keyAssignment[i]){const k=keyAssignment[i];return{type:'key',tag:'Key',t:k.t,d:k.d};}
+    if(s==='off')return{type:'rest',tag:'Rest',t:'Full Rest',d:'Genuine day off. Adaptation happens here, not in the gym.'};
+    // day or evening, not adjacent to a night shift
+    const prevGroup=i>0?groupOf[i-1]:null;
+    const amWindow=s==='evening';
+    let preferRun=(alt%2===0);
+    if(prevGroup==='run')preferRun=false;
+    else if(prevGroup==='legs'||prevGroup==='upper'||prevGroup==='strength')preferRun=true;
+    alt++;
+    groupOf[i]=preferRun?'run':'strength';
+    return preferRun
+      ?{type:'easy',tag:'Easy',t:amWindow?'AM Run':'Easy Run',d:amWindow?'40 min zone 2 in the morning. Done by lunch, fresh for the shift.':'30 min zone 2. Low stress, keeps the engine ticking.'}
+      :{type:'easy',tag:'Easy',t:amWindow?'AM Strength':'Express Strength',d:amWindow?'45 min lift in the morning — your best window before an evening shift.':'35 min full-body lift, before or after shift. In, out, done.'};
   });
   planEl.innerHTML=plan.map((p,i)=>`
     <div class="plan-day" style="animation-delay:${i*45}ms">
