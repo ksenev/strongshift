@@ -150,52 +150,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
 .card h3{font-size:18px;margin-bottom:9px}
 .card p{color:var(--muted);font-size:14.5px}
 
-/* ---------- DEMO ---------- */
-.demo-box{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(22px,4vw,44px);margin-top:48px;position:relative;z-index:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.demo-steps{color:var(--muted);font-size:14px;margin-bottom:22px}
-.demo-steps b{color:var(--orange-soft)}
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:18px}
-.day-btn{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 4px 12px;cursor:pointer;text-align:center;color:var(--text);font-family:var(--font-body);transition:border-color .2s,background .2s,transform .1s;min-width:0;overflow:hidden}
-.day-btn:active{transform:scale(.96)}
-.day-btn .dl{font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--muted);display:block;margin-bottom:7px}
-.day-btn .st{font-size:12px;font-weight:600;display:block}
-.day-btn .ic{font-size:16px;display:block;margin-bottom:3px}
-.day-btn[data-state="off"]{color:var(--muted)}
-.day-btn[data-state="day"]{background:rgba(255,77,20,.13);border-color:rgba(255,77,20,.55)}
-.day-btn[data-state="day"] .st{color:var(--orange-soft)}
-.day-btn[data-state="evening"]{background:rgba(255,176,32,.1);border-color:rgba(255,176,32,.5)}
-.day-btn[data-state="evening"] .st{color:#ffb020}
-.day-btn[data-state="night"]{background:#16162c;border-color:#3d3d78}
-.day-btn[data-state="night"] .st{color:#a3a3ff}
-.presets{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
-.chip{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:500;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.2s;font-family:var(--font-body)}
-.chip:hover{border-color:var(--orange);color:var(--orange-soft)}
-.chip.sm{padding:6px 12px;font-size:12.5px}
-.chip.on{border-color:var(--orange);background:var(--orange-dim);color:var(--orange-soft)}
-.sp-box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:22px}
-.sp-kicker{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--orange-soft);display:block;margin-bottom:10px}
-.sp-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.sp-row+.sp-row{margin-top:8px}
-.sp-lbl{font-size:12.5px;color:var(--muted);flex:0 0 88px}
-.plan-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
-.plan-day{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 10px;min-height:150px;display:flex;flex-direction:column;gap:8px}
-.plan-day .pd{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--muted)}
-.plan-day .pt{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px;width:fit-content}
-.pt-key{background:var(--orange-dim);color:var(--orange-soft)}
-.pt-easy{background:rgba(120,200,140,.12);color:#7bcf92}
-.pt-rec{background:#1d1d3a;color:#9f9fff}
-.pt-rest{background:#2e323c;color:var(--muted)}
-.plan-day h4{font-size:13px;line-height:1.25;font-family:var(--font-display)}
-.plan-day p{font-size:11px;color:var(--muted);line-height:1.45}
-.plan-sum{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding:16px 20px;background:var(--bg);border:1px solid var(--line);border-radius:14px;font-size:13.5px;color:var(--muted)}
-.plan-sum b{color:var(--text)}
-.rebuilt{margin-left:auto;color:var(--orange-soft);font-weight:600}
-.plan-note{margin-top:18px;font-size:13px;color:var(--muted)}
-.plan-note b{color:var(--orange-soft)}
+/* ---------- DIFFERENT ---------- */
+.compare-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-top:44px}
+.compare-head{display:grid;grid-template-columns:1fr 1fr}
+.compare-head>div{padding:16px 26px;font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.02em}
+.compare-head .no{color:var(--muted)}
+.compare-head .yes{color:var(--orange-soft);background:var(--orange-dim)}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.compare-row>div{padding:16px 26px;font-size:14.5px;display:flex;gap:10px;align-items:flex-start;line-height:1.4}
+.compare-row .no{color:var(--muted)}
+.compare-row .yes{color:var(--text);background:rgba(255,77,20,.06)}
+.compare-row svg{flex:none;margin-top:3px}
+/* ---------- SHOWCASE ---------- */
+.showcase-scroll{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 24px 12px;margin:44px -24px 0;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.showcase-scroll::-webkit-scrollbar{height:6px}
+.showcase-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.showcase-card{flex:0 0 auto;width:210px;scroll-snap-align:start;display:flex;flex-direction:column}
+.phone{position:relative;width:210px;height:428px;margin-bottom:20px;background:#0a0a0c;border-radius:38px;padding:9px;box-shadow:0 0 0 1.5px var(--line),inset 0 0 0 2px #000}
+.phone-screen{width:100%;height:100%;border-radius:29px;overflow:hidden;background:var(--surface);position:relative}
+.phone-screen img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.phone-notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:84px;height:22px;background:#0a0a0c;border-radius:12px;z-index:2}
+.phone::before,.phone::after{content:"";position:absolute;right:-1.5px;background:var(--line);border-radius:2px}
+.phone::before{top:100px;width:3px;height:52px}
+.phone::after{top:160px;width:3px;height:80px}
+.showcase-card h3{font-size:17px;margin:0 0 6px;letter-spacing:-.01em}
+.showcase-card p{color:var(--muted);font-size:14px;line-height:1.5;margin:0}
 @media (max-width:820px){
   .feat-grid{grid-template-columns:1fr 1fr}
-  .plan-grid{grid-template-columns:1fr 1fr}
-  .plan-day{min-height:0}
 }
 @media (max-width:560px){
   section{padding:44px 0}
@@ -224,25 +205,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
   /* features */
   .feat-grid{grid-template-columns:1fr;margin-top:36px}
   .card{padding:24px 22px}
-  /* demo */
-  .demo-box{padding:18px 14px;border-radius:18px;margin-top:32px}
-  .demo-steps{font-size:13px;margin-bottom:16px}
-  .sp-box{padding:12px}
-  .sp-lbl{flex:0 0 100%}
-  .presets{gap:8px;margin-bottom:22px}
-  .chip{padding:7px 13px;font-size:12.5px}
-  .week{gap:5px}
-  .day-btn{padding:10px 2px 8px;border-radius:11px}
-  .day-btn .dl{font-size:10.5px;margin-bottom:4px}
-  .day-btn .ic{font-size:14px}
-  .day-btn .st{font-size:10px}
-  .plan-grid{grid-template-columns:1fr;gap:7px}
-  .plan-day{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:12px 14px}
-  .plan-day .pd{width:34px}
-  .plan-day h4{font-size:13.5px}
-  .plan-day p{width:100%;font-size:11.5px}
-  .plan-sum{gap:8px 14px;font-size:12.5px;padding:13px 15px;margin-top:16px}
-  .rebuilt{margin-left:0!important;width:100%}
+  /* different */
+  .compare-card{margin-top:32px}
+  .compare-head>div,.compare-row>div{padding:12px 16px;font-size:13px}
+  /* showcase */
+  .showcase-card{width:168px}
+  .phone{width:168px;height:342px;border-radius:32px}
+  .phone-screen{border-radius:24px}
+  .phone-notch{width:68px;height:18px;top:8px}
+  .showcase-scroll{gap:16px;padding:8px 20px 12px;margin:32px -20px 0}
+  .showcase-card h3{font-size:15.5px}
+  .showcase-card p{font-size:13px}
   /* founder + pricing + faq */
   .founder-card blockquote{font-size:17px;margin-bottom:20px}
   .price-grid{margin-top:38px;gap:26px}
@@ -311,9 +284,6 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 
 /* ---------- ANIMATIONS ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes planIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
-@keyframes popIn{0%{transform:scale(.92)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
-@keyframes blink{from{opacity:.25}to{opacity:1}}
 @keyframes faqIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 /* hero entrance */
 .js .hero h1,.js .hero .sub,.js .hero-capture,.js .hero-props,.js .hs{opacity:0}
@@ -330,16 +300,12 @@ footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
 /* nav appears on scroll */
 nav{transition:background-color .35s ease,border-color .35s ease}
 nav:not(.scrolled){background:rgba(28,30,36,0);border-bottom-color:transparent}
-/* demo */
-.plan-day{animation:planIn .45s cubic-bezier(.2,.7,.2,1) both}
-.day-btn.pop{animation:popIn .3s ease}
-.plan-sum.bump{animation:blink .45s ease}
 /* faq answers */
 .faq details[open] p{animation:faqIn .35s ease}
 /* waitlist success */
 .wl-success{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
 @media (prefers-reduced-motion:reduce){
-  .hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens,.hs,.plan-day,.day-btn.pop,.plan-sum.bump,.wl-success,.faq details[open] p{animation:none!important;opacity:1!important}
+  .hero h1,.hero .sub,.hero-capture,.hero-props,.hero-screens,.hs,.wl-success,.faq details[open] p{animation:none!important;opacity:1!important}
 }
 </style>
 </head>
@@ -384,7 +350,7 @@ nav:not(.scrolled){background:rgba(28,30,36,0);border-bottom-color:transparent}
       </form>
       <div class="wl-success wl-ok">✓ You're on the list. We'll be in touch before launch.</div>
       <div class="wl-success wl-err" style="border-color:rgba(240,90,90,.4);background:rgba(240,90,90,.08);color:#f09090">Something went wrong — try again.</div>
-      <a class="hero-demo-link" href="#demo">or try the live demo ↓</a>
+      <a class="hero-demo-link" href="#demo">or see how it works ↓</a>
     </div>
     <div class="hero-props">
       <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff7a3d" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Built by a critical care doctor</span>
@@ -455,40 +421,72 @@ nav:not(.scrolled){background:rgba(28,30,36,0);border-bottom-color:transparent}
     </div>
   </div>
 </section>
+<section class="different">
+  <div class="container">
+    <div class="reveal">
+      <span class="kicker">Why it's different</span>
+      <h2>Built for shift work. Not adapted for it.</h2>
+      <p class="sub">Most training apps bolt on a "rest day" toggle and call it done. Strongshift is built around your roster from the ground up.</p>
+    </div>
+    <div class="compare-card reveal">
+      <div class="compare-head">
+        <div class="no">Generic training apps</div>
+        <div class="yes">Strongshift</div>
+      </div>
+      <div class="compare-row">
+        <div class="no"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a4a6ad" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>One fixed weekly schedule</div>
+        <div class="yes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff4d14" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Rebuilds instantly around your actual roster</div>
+      </div>
+      <div class="compare-row">
+        <div class="no"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a4a6ad" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Ignores night shifts and sleep debt</div>
+        <div class="yes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff4d14" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Sleep-aware intensity — recovery after nights, not PRs</div>
+      </div>
+      <div class="compare-row">
+        <div class="no"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a4a6ad" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>You adapt to the plan, or you fall off it</div>
+        <div class="yes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff4d14" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>The plan adapts to you, every time shifts change</div>
+      </div>
+      <div class="compare-row">
+        <div class="no"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a4a6ad" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Built for a Monday–Friday, 9-to-5 life</div>
+        <div class="yes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff4d14" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Built for days, nights, lates, FIFO, on-call</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="demo" id="demo">
   <div class="glow" style="width:500px;height:500px;background:radial-gradient(circle closest-side,rgba(255,77,20,.09),transparent 70%);top:20%;left:-200px"></div>
   <div class="container">
     <div class="reveal">
-      <span class="kicker">Live demo</span>
-      <h2>See it work. Right now.</h2>
-      <p class="sub">Tap the days below to match a week of your roster — each tap cycles Off → Day → Evening → Night. Watch the training week rebuild itself.</p>
+      <span class="kicker">See it in action</span>
+      <h2>Built for the way you actually train.</h2>
+      <p class="sub">From setup to your next session — every screen adapts to your roster, not the other way around.</p>
     </div>
-    <div class="demo-box reveal">
-      <p class="demo-steps">Tap to cycle: <b>Off</b> → <b>Day</b> → <b>Evening</b> → <b>Night</b> — or load a preset:</p>
-      <div class="presets">
-        <button class="chip" data-preset="fourfour">4 on / 4 off</button>
-        <button class="chip" data-preset="nights">Night block</button>
-        <button class="chip" data-preset="mixed">Rotating week</button>
-        <button class="chip" data-preset="clear">Clear</button>
+    <div class="showcase-scroll reveal">
+      <div class="showcase-card">
+        <div class="phone"><div class="phone-notch"></div><div class="phone-screen"><img src="strongshift-showcase-goal.png" alt="Set your goal screen" loading="lazy"></div></div>
+        <h3>Set your goal, not a template</h3>
+        <p>Running distance, target time, strength focus — dialled in before day one.</p>
       </div>
-      <div class="week" id="week" aria-label="Select your shifts for the week"></div>
-      <div class="sp-box" id="spBox">
-        <span class="sp-kicker">NEW · YOUR STARTING POINT</span>
-        <div class="sp-row"><span class="sp-lbl">Longest run</span>
-          <button class="chip sm" data-long="3">3 km</button>
-          <button class="chip sm on" data-long="6">6 km</button>
-          <button class="chip sm" data-long="10">10 km</button>
-          <button class="chip sm" data-long="15">15+</button>
-        </div>
-        <div class="sp-row"><span class="sp-lbl">Lifting</span>
-          <button class="chip sm" data-lift="new">New</button>
-          <button class="chip sm on" data-lift="ret">Returning</button>
-          <button class="chip sm" data-lift="exp">Experienced</button>
-        </div>
+      <div class="showcase-card">
+        <div class="phone"><div class="phone-notch"></div><div class="phone-screen"><img src="strongshift-showcase-start.png" alt="Starting point screen" loading="lazy"></div></div>
+        <h3>Starts where you actually are</h3>
+        <p>Your longest run and lifting experience set day-one paces and loads — not a stranger's.</p>
       </div>
-      <div class="plan-grid" id="plan"></div>
-      <div class="plan-sum" id="planSum"></div>
-      <p class="plan-note"><b>This is a taste.</b> The full app reads your real roster, factors in sleep and fatigue, builds your plan around your goals — strength, running, or both — starts it from your current fitness, not someone else's, progresses your lifts and paces week to week, and rebuilds instantly when shifts change.</p>
+      <div class="showcase-card">
+        <div class="phone"><div class="phone-notch"></div><div class="phone-screen"><img src="strongshift-showcase-roster.png" alt="Roster tab" loading="lazy"></div></div>
+        <h3>Your shifts, your calendar</h3>
+        <p>Tap a day to cycle Off, Day, Late, Night — the plan rebuilds around it instantly.</p>
+      </div>
+      <div class="showcase-card">
+        <div class="phone"><div class="phone-notch"></div><div class="phone-screen"><img src="strongshift-showcase-plan.png" alt="Plan tab" loading="lazy"></div></div>
+        <h3>Your next 3 months, mapped</h3>
+        <p>Periodised blocks that shift into recovery automatically after a run of nights.</p>
+      </div>
+      <div class="showcase-card">
+        <div class="phone"><div class="phone-notch"></div><div class="phone-screen"><img src="strongshift-showcase-progress.png" alt="Progress tab" loading="lazy"></div></div>
+        <h3>Proof it's working</h3>
+        <p>A fitness score, streaks, and trends that account for the roster you're on.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -555,6 +553,7 @@ nav:not(.scrolled){background:rgba(28,30,36,0);border-bottom-color:transparent}
     <details class="reveal"><summary>Which roster patterns does it handle?</summary><p>All of them — straight days, permanent nights, rotating rosters, 4-on-4-off, FIFO swings, on-call blocks. If you can enter it, the engine can program around it.</p></details>
     <details class="reveal"><summary>What happens when my roster changes mid-week?</summary><p>Update your shifts and the week rebuilds instantly. Key sessions move to your best recovery windows; nothing heavy lands after a run of nights.</p></details>
     <details class="reveal"><summary>Do I need a gym?</summary><p>No. Choose a gym, home-equipment or bodyweight track when you set up. Hospital gym at 3am counts too.</p></details>
+    <details class="reveal"><summary>Will it sync with my smartwatch?</summary><p>Smartwatch sync is on the roadmap — Apple Watch, Garmin and Fitbit support is coming so your runs and lifts log automatically instead of manual entry.</p></details>
     <details class="reveal"><summary>Who is building this?</summary><p>A critical care doctor in Brisbane who has spent years training for strength and running goals around a hospital roster — and got tired of apps that assume weekends exist.</p></details>
     <details class="reveal"><summary>What does it cost?</summary><p>$14.99/month or $99/year (AUD), both with a 14-day free trial. Waitlist members get 30% off their first year.</p></details>
   </div>
@@ -616,168 +615,6 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{
 }),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-// ---------- Demo engine ----------
-const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const STATES=['off','day','evening','night'];
-const META={off:{ic:'—',label:'Off'},day:{ic:'☀️',label:'Day'},evening:{ic:'🌆',label:'Evening'},night:{ic:'🌙',label:'Night'}};
-const PRESETS={
-  fourfour:['day','day','night','night','off','off','off','off'].slice(0,7),
-  nights:['off','night','night','night','night','off','off'],
-  mixed:['day','evening','off','night','night','off','off'],
-  clear:['off','off','off','off','off','off','off']
-};
-let states=[...PRESETS.mixed];
-const weekEl=document.getElementById('week'),planEl=document.getElementById('plan'),sumEl=document.getElementById('planSum');
-
-function renderWeek(popI){
-  weekEl.innerHTML=states.map((s,i)=>`
-    <button class="day-btn${i===popI?' pop':''}" data-state="${s}" data-i="${i}" aria-label="${DAYS[i]}: ${META[s].label} — tap to change">
-      <span class="dl">${DAYS[i].toUpperCase()}</span>
-      <span class="ic">${META[s].ic}</span>
-      <span class="st">${META[s].label}</span>
-    </button>`).join('');
-}
-weekEl.addEventListener('click',e=>{
-  const btn=e.target.closest('.day-btn');if(!btn)return;
-  const i=+btn.dataset.i;
-  states[i]=STATES[(STATES.indexOf(states[i])+1)%STATES.length];
-  renderWeek(i);generatePlan();
-});
-document.querySelectorAll('.presets .chip').forEach(c=>c.addEventListener('click',()=>{
-  states=[...PRESETS[c.dataset.preset]];
-  renderWeek();generatePlan();
-}));
-// starting-point chips — the demo plan responds to fitness level, mirroring the app engine
-let spLong=6,spLift='ret';
-document.querySelectorAll('#spBox .chip').forEach(c=>c.addEventListener('click',()=>{
-  if(c.dataset.long){spLong=+c.dataset.long;document.querySelectorAll('[data-long]').forEach(x=>x.classList.toggle('on',x===c));}
-  else{spLift=c.dataset.lift;document.querySelectorAll('[data-lift]').forEach(x=>x.classList.toggle('on',x===c));}
-  trackDemoOnce();generatePlan();
-}));
-
-// small combinatorics helpers for the demo scheduler below
-function combinations(arr,k){
-  if(k===0)return[[]];
-  if(arr.length<k)return[];
-  const [head,...tail]=arr;
-  const withHead=combinations(tail,k-1).map(c=>[head,...c]);
-  const withoutHead=combinations(tail,k);
-  return withHead.concat(withoutHead);
-}
-function permutations(arr){
-  if(arr.length<=1)return[arr];
-  const out=[];
-  arr.forEach((v,i)=>{
-    const rest=arr.slice(0,i).concat(arr.slice(i+1));
-    permutations(rest).forEach(p=>out.push([v,...p]));
-  });
-  return out;
-}
-// adjacent-day conflict cost between two session groups — legs/running compound fatigue,
-// back-to-back running is also suboptimal, upper-body work doesn't meaningfully clash
-function groupConflict(g1,g2){
-  if(g1==='legs'&&g2==='legs')return 3;
-  if((g1==='legs'&&g2==='run')||(g1==='run'&&g2==='legs'))return 3;
-  if(g1==='run'&&g2==='run')return 2;
-  return 0;
-}
-
-function generatePlan(){
-  const LV={
-    new:{t1:'Full-Body Strength',d1:'Light loads, 3×8–10, technique first · 45 min · key session',t2:'Full-Body Strength B',d2:'Simple movements, light loads · 40 min · key session'},
-    ret:{t1:'Lower Strength',d1:'Moderate loads — rebuild over 2–3 weeks · 50 min · key session',t2:'Upper Strength',d2:'Press + pull, moderate loads, no ego sets · 50 min · key session'},
-    exp:{t1:'Heavy Lower',d1:'Squat focus · 60 min · key session',t2:'Heavy Upper',d2:'Press + pull · 55 min · key session'}
-  }[spLift];
-  const KEYS=[
-    {id:'lower',group:'legs',t:LV.t1,d:LV.d1},
-    {id:'long',group:'run',t:'Long Easy Run — '+spLong+' km',d:'Starts where you are · builds ~10% a week toward your goal'},
-    {id:'tempo',group:'run',t:'Tempo Run',d:'45 min · comfortably hard · key session'},
-    {id:'upper',group:'upper',t:LV.t2,d:LV.d2}
-  ];
-
-  // pass 1 — lock in the shift-adjacency sessions exactly as before (pre-night primer,
-  // protect sleep between nights, post-night recovery/micro-dose)
-  const dayCount=states.length;
-  const forced=new Array(dayCount).fill(null);
-  states.forEach((s,i)=>{
-    const prev=i>0?states[i-1]:null;
-    if(s==='night'){
-      forced[i]=prev==='night'
-        ?{type:'rec',tag:'Recovery',t:'Protect Sleep',d:'20 min mobility between sleeps. Nothing heavy — sleep is the session.',group:'none'}
-        :{type:'rec',tag:'Primer',t:'Pre-Night Primer',d:'25 min full-body strength, finished by early afternoon. Then rest before the shift.',group:'none'};
-    } else if(prev==='night'){
-      forced[i]=s==='off'
-        ?{type:'rec',tag:'Reset',t:'Night Recovery',d:'Sleep in. Then 30 min zone-2 run in daylight to reset your body clock.',group:'run'}
-        :{type:'easy',tag:'Easy',t:'Micro Dose',d:s==='day'?'20 min easy spin or brisk walk. You\'re carrying sleep debt — don\'t fight it.':'20 min easy movement. Coming off nights — keep it gentle before your evening shift.',group:'none'};
-    }
-  });
-
-  // pass 2 — spread key sessions across the available off days instead of stacking them
-  // front-to-back, then pick whichever key session TYPES land on adjacent off days so a
-  // heavy leg day never sits next to the long run (or another leg/run session)
-  const offSlots=[];
-  states.forEach((s,i)=>{ if(s==='off'&&!forced[i])offSlots.push(i); });
-  const nKey=Math.min(KEYS.length,offSlots.length);
-  let keySlots=offSlots;
-  if(offSlots.length>nKey){
-    const step=offSlots.length/nKey,picked=new Set();
-    for(let i=0;i<nKey;i++)picked.add(offSlots[Math.min(offSlots.length-1,Math.floor(i*step+step/2))]);
-    let ptr=0;
-    while(picked.size<nKey&&ptr<offSlots.length){picked.add(offSlots[ptr]);ptr++;}
-    keySlots=[...picked].sort((a,b)=>a-b);
-  }
-  let bestCombo=null,bestScore=Infinity;
-  combinations(KEYS,nKey).forEach(combo=>{
-    permutations(combo).forEach(perm=>{
-      let score=0;
-      for(let i=0;i<keySlots.length;i++)
-        for(let j=i+1;j<keySlots.length;j++)
-          if(Math.abs(keySlots[i]-keySlots[j])===1)score+=groupConflict(perm[i].group,perm[j].group);
-      score=score*100-(combo.some(k=>k.id==='long')?2:0)-new Set(combo.map(k=>k.group)).size;
-      if(score<bestScore){bestScore=score;bestCombo=perm;}
-    });
-  });
-  const keyAssignment={};
-  keySlots.forEach((slot,i)=>keyAssignment[slot]=bestCombo[i]);
-
-  // pass 3 — fill remaining off days as rest, and day/evening shifts as easy strength or
-  // easy running, favouring whichever complements the previous day's session
-  const groupOf=new Array(dayCount).fill(null);
-  states.forEach((s,i)=>{
-    if(forced[i])groupOf[i]=forced[i].group;
-    else if(keyAssignment[i])groupOf[i]=keyAssignment[i].group;
-    else if(s==='off')groupOf[i]='rest';
-  });
-  let alt=0;
-  const plan=states.map((s,i)=>{
-    if(forced[i])return forced[i];
-    if(keyAssignment[i]){const k=keyAssignment[i];return{type:'key',tag:'Key',t:k.t,d:k.d};}
-    if(s==='off')return{type:'rest',tag:'Rest',t:'Full Rest',d:'Genuine day off. Adaptation happens here, not in the gym.'};
-    // day or evening, not adjacent to a night shift
-    const prevGroup=i>0?groupOf[i-1]:null;
-    const amWindow=s==='evening';
-    let preferRun=(alt%2===0);
-    if(prevGroup==='run')preferRun=false;
-    else if(prevGroup==='legs'||prevGroup==='upper'||prevGroup==='strength')preferRun=true;
-    alt++;
-    groupOf[i]=preferRun?'run':'strength';
-    return preferRun
-      ?{type:'easy',tag:'Easy',t:amWindow?'AM Run':'Easy Run',d:amWindow?'40 min zone 2 in the morning. Done by lunch, fresh for the shift.':'30 min zone 2. Low stress, keeps the engine ticking.'}
-      :{type:'easy',tag:'Easy',t:amWindow?'AM Strength':'Express Strength',d:amWindow?'45 min lift in the morning — your best window before an evening shift.':'35 min full-body lift, before or after shift. In, out, done.'};
-  });
-  planEl.innerHTML=plan.map((p,i)=>`
-    <div class="plan-day" style="animation-delay:${i*45}ms">
-      <span class="pd">${DAYS[i].toUpperCase()}</span>
-      <span class="pt pt-${p.type}">${p.tag}</span>
-      <h4>${p.t}</h4>
-      <p>${p.d}</p>
-    </div>`).join('');
-  const n={key:0,easy:0,rec:0,rest:0};plan.forEach(p=>n[p.type]++);
-  sumEl.innerHTML=`<b>Weekly load:</b><span><b>${n.key}</b> key session${n.key===1?'':'s'}</span><span><b>${n.easy}</b> easy</span><span><b>${n.rec}</b> recovery</span><span><b>${n.rest}</b> rest</span><span class="rebuilt">Rebuilt in 0.02s ⚡</span>`;
-  sumEl.classList.remove('bump');void sumEl.offsetWidth;sumEl.classList.add('bump');
-}
-renderWeek();generatePlan();
-
 // ---------- Waitlist ----------
 (function(){
   const ref=new URLSearchParams(window.location.search).get('ref');
@@ -813,10 +650,6 @@ document.querySelectorAll('form[data-wl]').forEach(form=>{
 function track(name){
   if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:name,event:true});
 }
-let demoTracked=false;
-function trackDemoOnce(){if(!demoTracked){demoTracked=true;track('demo-interact');}}
-weekEl.addEventListener('click',trackDemoOnce);
-document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',trackDemoOnce));
 document.querySelectorAll('.hero-demo-link').forEach(a=>a.addEventListener('click',()=>track('demo-link-click')));
 
 // deep-link support (e.g. /#demo from Instagram bio)
