@@ -63,7 +63,8 @@ h2{font-size:clamp(28px,4.5vw,48px);margin-bottom:14px}
 .strip,.features,.pricing,footer{border-image:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent) 1}
 /* halve padding where two plain sections meet, so gaps match the bordered sections */
 .demo,.faq{padding-bottom:clamp(36px,4.5vw,60px)}
-.founder,.waitlist{padding-top:clamp(36px,4.5vw,60px)}
+.demo,.founder,.waitlist{padding-top:clamp(36px,4.5vw,60px)}
+.different{padding-bottom:clamp(36px,4.5vw,60px)}
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
@@ -162,7 +163,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
 .compare-row .yes{color:var(--text);background:rgba(255,77,20,.06)}
 .compare-row svg{flex:none;margin-top:3px}
 /* ---------- SHOWCASE ---------- */
-.showcase-scroll{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 24px 12px;margin:44px -24px 0;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.showcase-scroll{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 12px;margin-top:44px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .showcase-scroll::-webkit-scrollbar{height:6px}
 .showcase-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 .showcase-card{flex:0 0 auto;width:210px;scroll-snap-align:start;display:flex;flex-direction:column}
@@ -181,7 +182,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
 @media (max-width:560px){
   section{padding:44px 0}
   .demo,.faq{padding-bottom:22px}
-  .founder,.waitlist{padding-top:22px}
+  .demo,.founder,.waitlist{padding-top:22px}
+  .different{padding-bottom:22px}
   .container{padding:0 16px}
   h2{font-size:clamp(26px,8vw,34px)}
   .sub{font-size:15.5px}
@@ -213,7 +215,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(20px);-w
   .phone{width:168px;height:342px;border-radius:32px}
   .phone-screen{border-radius:24px}
   .phone-notch{width:68px;height:18px;top:8px}
-  .showcase-scroll{gap:16px;padding:8px 20px 12px;margin:32px -20px 0}
+  .showcase-scroll{gap:16px;padding:8px 0 12px;margin-top:32px}
   .showcase-card h3{font-size:15.5px}
   .showcase-card p{font-size:13px}
   /* founder + pricing + faq */
