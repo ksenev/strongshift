@@ -1,26 +1,21 @@
-const CACHE = "strongshift-v33";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
+// Kill-switch service worker.
+// Retires the old Strongshift PWA (cache "strongshift-vNN"). The app is now the
+// Expo web build, which manages its own loading and registers no service worker.
+// Returning users' browsers re-fetch this file on their next visit; because it
+// changed, it installs, wipes all old caches, unregisters itself, and reloads any
+// open windows so they pull the fresh app. New visitors never register a worker.
+self.addEventListener("install", () => self.skipWaiting());
 
-self.addEventListener("install", e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    await self.registration.unregister();
+    const clients = await self.clients.matchAll({ type: "window" });
+    clients.forEach((client) => client.navigate(client.url));
+  })());
 });
 
-self.addEventListener("activate", e => {
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener("fetch", e => {
-  if (e.request.method !== "GET") return;
-  e.respondWith(
-    fetch(e.request)
-      .then(r => {
-        const copy = r.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
-        return r;
-      })
-      .catch(() => caches.match(e.request).then(m => m || caches.match("index.html")))
-  );
-});
+// Pass every request straight through to the network — never serve stale cache.
+self.addEventListener("fetch", () => {});
